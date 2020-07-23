@@ -44,7 +44,7 @@ function plot_history!(history::Array{Array{Particle, 1}, 1}; frame_size::Tuple{
     println("")
     println("   +++++ GENERATING IMAGES +++++")
     println("")
-    for (f, particles) in enumerate(history[frame_nums])
+    for (f, particles) in enumerate(history)
         plot_frame!(particles; frame_size = frame_size, xlim = xlim, ylim = ylim, colors = colors, save_as = string(folder, "Frame $f.png"))
     end
     println("")
