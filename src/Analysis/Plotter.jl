@@ -1,34 +1,7 @@
 using Plots
-using Serialization
 
-export load_simulation
 export plot_history!
 export plot_frame!
-
-#=
-Load required files (I think this is required)
-=#
-include("../Definitions.jl")
-
-println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-println("Plotter Loaded")
-println("Michael Wang, 07/21/2020")
-println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
-#=
-Load simulation data
-=#
-function load_simulation(; file::String)
-    simulation = begin
-        open(file, "r") do f
-            deserialize(f)
-        end
-    end
-    println("")
-    println(file, " loaded")
-    println("")
-    return simulation
-end
 
 #=
 Plot a frame
@@ -71,7 +44,7 @@ function plot_history!(history::Array{Array{Particle, 1}, 1}; frame_size::Tuple{
     println("")
     println("   +++++ GENERATING IMAGES +++++")
     println("")
-    for (f, particles) in enumerate(history)
+    for (f, particles) in enumerate(history[frame_nums])
         plot_frame!(particles; frame_size = frame_size, xlim = xlim, ylim = ylim, colors = colors, save_as = string(folder, "Frame $f.png"))
     end
     println("")
