@@ -1,0 +1,8 @@
+name = "SoftSquishyMatter"
+uuid = "5480bac6-0e62-46d9-b819-45aa9457cd0d"
+authors = ["Michael Wang "]
+version = "0.1.0"
+
+[deps]
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"

@@ -1,0 +1,62 @@
+export compute_pair_interaction!
+
+#=
+################################################################################
+Functions related to pair interactions.  compute_pair_interaction!(...) computes
+the forces particles exert on each other.
+################################################################################
+=#
+
+#=
+Apply periodic boundaries
+=#
+@inline function wrap_displacement(displacement::Float64; period::Float64)
+    if period > 0.0 && abs(displacement) > period / 2
+        return displacement - sign(displacement) * period
+    end
+    return displacement
+end
+
+#=
+Compute the Lennard-Jones interaction
+=#
+function compute_pair_interaction!(lj::LennardJones; period_x::Float64 = -1.0, period_y::Float64 = -1.0)
+    @use_threads lj.multithreaded for particle in lj.particles
+        x = particle.x
+        y = particle.y
+        i_box = trunc(Int64, x / lj.cell_list.cell_spacing_x)
+        j_box = trunc(Int64, y / lj.cell_list.cell_spacing_y)
+        for di = -1 : 1, dj = -1 : 1
+            i = mod(i_box + di, lj.cell_list.num_cells_x) + 1
+            j = mod(j_box + dj, lj.cell_list.num_cells_y) + 1
+
+            pid = lj.cell_list.start_pid[i, j]
+            while pid > 0
+                neighbor = lj.cell_list.particles[pid]
+                Δx = wrap_displacement(x - neighbor.x; period = period_x)
+                Δy = wrap_displacement(y - neighbor.y; period = period_y)
+
+                Δr² = Δx^2 + Δy^2
+                σ² = (lj.σ < 0.0 ? particle.R + neighbor.R : lj.σ)^2
+                cutoff² = (lj.cutoff < 0.0 ? 2^(1.0 / 3.0) * σ² : lj.cutoff^2)
+                if 0.0 < Δr² < cutoff²
+                    inv² = σ² / Δr²
+                    inv⁶ = inv² * inv² * inv²
+                    inv⁸ = inv⁶ * inv²
+                    coef = 24 * lj.ϵ / σ² * (2 * inv⁶ - 1) * inv⁸
+
+                    f_x = coef * Δx
+                    f_y = coef * Δy
+                    particle.f_x += f_x
+                    particle.f_y += f_y
+
+                    if lj.use_newton_3rd
+                        neighbor.f_x -= f_x
+                        neighbor.f_y -= f_y
+                    end
+                end
+                pid = lj.cell_list.next_pid[pid]
+            end
+        end
+    end
+end
