@@ -1,11 +1,6 @@
 export get_active_force
 export update_active_force!
 
-"""
-    get_active_force(active_brownian)
-
-Returns the x, y components of the propulsion force γv.  This function
-"""
 @inline function get_active_force(active_brownian::ActiveBrownian)
     return active_brownian.γv_x, active_brownian.γv_y
 end
@@ -20,9 +15,6 @@ function update_active_force!(active_brownian::ActiveBrownian, particle::Particl
     active_brownian.γv_y = active_brownian.γv * sin(active_brownian.θ)
 end
 
-#=
-Run-and-tumble
-=#
 @inline function get_active_force(run_and_tumble::RunAndTumble)
     return run_and_tumble.γv_x, run_and_tumble.γv_y
 end
