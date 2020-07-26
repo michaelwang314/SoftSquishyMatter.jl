@@ -4,7 +4,7 @@ export compute_external_force!
     compute_external_force!(contant_force)
 
 Applies a constant force to select particles stored under 
-'constant_force.particles'.
+`constant_force.particles`.
 """
 function compute_external_force!(constant_force::ConstantForce)
     for particle in constant_force.particles
@@ -17,7 +17,7 @@ end
     compute_external_force!(harmonic_trap)
 
 Applies a harmonic potential to select particles stored under
-'harmonic_trap.particles'.
+`harmonic_trap.particles`.
 """
 function compute_external_force!(harmonic_trap::HarmonicTrap)
     for particle in harmonic_trap.particles
