@@ -4,8 +4,8 @@ export update_cell_list!
 """
     update_cell_list!(cell_list)
 
-Updates cell list with current positions of particles stored under
-cell_list.particles.
+Updates cell list with current positions of select particles stored under
+'cell_list.particles'.
 """
 function update_cell_list!(cell_list::CellList)
     fill!(cell_list.start_pid, -1)
