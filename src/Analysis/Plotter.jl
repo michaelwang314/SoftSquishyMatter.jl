@@ -8,7 +8,7 @@ export plot_frame!
 
 Displays current configuration of `particles`.
 """
-function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int64} = (800, 800),
+function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int64} = (600, 600),
                                                     xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
                                                     colors::Dict{Symbol, String} = Dict(:particle => "black"),
                                                     save_as::String)
