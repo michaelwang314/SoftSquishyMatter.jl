@@ -1,14 +1,11 @@
 export update_cell_list!
 
-#=
-################################################################################
-Functions related to 'CellList'
-################################################################################
-=#
+"""
+    update_cell_list!(cell_list)
 
-#=
-Updates the cell list given current configuration of particles
-=#
+Updates cell list with current positions of select particles stored under
+`cell_list.particles`.
+"""
 function update_cell_list!(cell_list::CellList)
     fill!(cell_list.start_pid, -1)
 

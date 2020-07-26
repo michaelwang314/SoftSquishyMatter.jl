@@ -1,8 +1,5 @@
 module SoftSquishyMatter
 
-#=
-Load files
-=#
 include("Definitions.jl")
 include("RunSimulation.jl")
 include("ActiveForces.jl")

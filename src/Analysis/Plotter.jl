@@ -3,10 +3,12 @@ using Plots
 export plot_history!
 export plot_frame!
 
-#=
-Plot a frame
-=#
-function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int64} = (800, 800),
+"""
+    plot_frame!(particles; frame_size, xlim, ylim, colors, save_as)
+
+Displays current configuration of `particles`.
+"""
+function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int64} = (600, 600),
                                                     xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
                                                     colors::Dict{Symbol, String} = Dict(:particle => "black"),
                                                     save_as::String)
@@ -37,9 +39,11 @@ function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int
     println(save_as, " done")
 end
 
-#=
-Plot history
-=#
+"""
+    plot_history!(history; frame_size, xlim, ylim, colors, folder)
+
+Plots each frame of `history`.
+"""
 function plot_history!(history::Array{Array{Particle, 1}, 1}; frame_size::Tuple{Int64, Int64} = (600, 600), xlim::Array{Float64, 1}, ylim::Array{Float64, 1}, colors::Dict{Symbol, String} = Dict(:particle => "black"), folder::String = "frames/")
     println("")
     println("   +++++ GENERATING IMAGES +++++")

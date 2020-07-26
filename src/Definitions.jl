@@ -1,16 +1,21 @@
-#=
-################################################################################
-Active/Self-propelling forces
-    - Active Brownian
-    - Run-and-tumble
-################################################################################
-=#
 export AbstractActiveForce
 export ActiveBrownian
 export RunAndTumble
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Active forces
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 abstract type AbstractActiveForce end
 
+"""
+Stores properties of active Brownian force
+
+    ActiveBrownian(; γv, D_rot, align)
+
+Initializes an active Brownian force with propulsion `γv`, rotational diffusion 
+`D_rot`.  If `align == true`, the active Brownian force will align with the 
+particle's orientation and allow us to introduce orientational interactions.
+"""
 mutable struct ActiveBrownian <: AbstractActiveForce
     γv_x::Float64
     γv_y::Float64
@@ -28,6 +33,15 @@ mutable struct ActiveBrownian <: AbstractActiveForce
     end
 end
 
+"""
+Stores properties of run-and-tumble force
+
+    RunAndTumble(; γv, α, align)
+
+Initializes a run-and-tumble force with propulsion `γv` and tumble rate `α`. If 
+`align == true`, the active Brownian force will align with the particle's 
+orientation and allow us to introduce orientational interactions.
+"""
 mutable struct RunAndTumble <: AbstractActiveForce
     γv_x::Float64
     γv_y::Float64
@@ -47,13 +61,28 @@ mutable struct RunAndTumble <: AbstractActiveForce
     end
 end
 
-#=
-################################################################################
-Particle
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Particle
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export Particle
 
+"""
+Stores properties of a particle
+
+    Particle(; ptype, x, y, θ, R, γ_trans, γ_rot, D_trans, D_rot, active_force)
+
+# Arguments
+- `ptype::Symbol = :particle`: particle type
+- `x::Float64`: x position
+- `y::Float64`: y position
+- `θ::Float64 = 2 * pi * rand()`: in-plane orientation
+- `R::Float64`: radius
+- `γ_trans::Float64 = -1.0`: translational friction.  If `γ_trans < 0`, use `γ_trans = 6 * pi * 8.9e-4 * R`.
+- `γ_rot::Float64 = -1.0`: rotational friction. If `γ_rot < 0`, use `γ_rot = 8 * pi * 8.9e-4 * R^3`.
+- `D_trans::Float64`: translational diffusion
+- `D_rot::Float64`: rotational diffusion
+- `active_force::Union{AbstractActiveForce, Nothing} = nothing`: active force.
+"""
 mutable struct Particle
     ptype::Symbol # particle type
 
@@ -90,13 +119,20 @@ mutable struct Particle
     end
 end
 
-#=
-################################################################################
-CellList for finding neighbors
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Cell list
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export CellList
 
+"""
+Stores properties of a cell list
+
+    CellList(; particles, L_x, L_y, cutoff)
+
+Creates a cell list for `particles` in region/simulation with dimensions 
+`L_x`, `L_y`.  `cutoff` gives the approximate size of the cells, the actual size 
+of which is chosen so that an integer number of cells fit in each dimension.
+"""
 struct CellList
     start_pid::Array{Int64, 2}
     next_pid::Array{Int64, 1}
@@ -131,17 +167,29 @@ struct CellList
     end
 end
 
-#=
-################################################################################
-Types of pair interactions
-    - Lennard-Jones
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Pair interactions
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractPairInteraction
 export LennardJones
 
 abstract type AbstractPairInteraction end
 
+"""
+Stores properties of a Lennard-Jones interaction
+
+    LennardJones(; particles, cell_list, ϵ, σ, cutoff, multithreaded, use_newton_3rd)
+...
+# Arguments
+- `particles::Array{Particle, 1}`: particles to compute Lennard-Jones for
+- `cell_list::CellList`: cell list for neighbors
+- `ϵ::Float64`: energy scale of Lennard-Jones potential
+- `σ::Float64 = -1.0`: length scale of Lennard-Jones potential.  If `σ < 0`, use diameters of interacting particles.
+- `cutoff::Float64 = -1.0`: distance to truncate interaction.  If `cutoff < 0`, use `cutoff = 2^(1.0 / 6.0) * σ`, which corresponds to WCA interaction.
+- `multithreaded::Bool = false`: if `true`, split particles between threads.
+- `use_newton_3rd::Bool = false`: if `true`, use Newton's 3rd law to also compute force on neighbors.  Be CAREFUL with overcounting and race conditions with threads.
+...
+"""
 struct LennardJones <: AbstractPairInteraction
     ϵ::Float64
     σ::Float64
@@ -161,22 +209,27 @@ struct LennardJones <: AbstractPairInteraction
 end
 
 struct DipoleDipole <: AbstractPairInteraction
-    #to be added
+    # TO BE ADDED
 end
 
 struct HarmonicBond <: AbstractPairInteraction
-    #to be added
+    # TO BE ADDED
 end
 
-#=
-################################################################################
-External forces
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# External forces
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractExternalForce
 
 abstract type AbstractExternalForce end
 
+"""
+Stores properties of constant force
+
+    ConstantForce(particles; f_x, f_y)
+
+Initialize a constant force `f_x`, `f_y` for 'particles'.
+"""
 struct ConstantForce <: AbstractExternalForce
     f_x::Float64
     f_y::Float64
@@ -188,6 +241,14 @@ struct ConstantForce <: AbstractExternalForce
     end
 end
 
+"""
+Stores properties of harmonic trap
+
+    HarmonicTrap(particles; x_center, y_center, k_trap)
+
+Initialize a harmonic trap with stiffness `k_trap` centered at `x_center`, 
+`y_center` for `particles`.
+"""
 struct HarmonicTrap <: AbstractExternalForce
     x_center::Float64
     y_center::Float64
@@ -200,17 +261,23 @@ struct HarmonicTrap <: AbstractExternalForce
     end
 end
 
-#=
-################################################################################
-Integrators
-    - Brownian
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Integrators
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractIntegrator
 export Brownian
 
 abstract type AbstractIntegrator end
 
+"""
+Stores properties of a Brownian integrator
+
+    Brownian(; particles, dt, rotations, multithreaded)
+
+Initialize a Brownian integrator for `particles` with timestep `dt`.  If 
+`rotations == true`, integrate the orientational degree of freedom.  If 
+`multithreaded == true`, split particles between threads.
+"""
 struct Brownian <: AbstractIntegrator
     dt::Float64
     particles::Array{Particle, 1}
@@ -228,13 +295,34 @@ struct Langevin <: AbstractIntegrator
     # to be added
 end
 
-#=
-################################################################################
-For storing the simulation
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Simulation data
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export Simulation
 
+"""
+Stores all information needed to run simulation
+
+    Simulation(...)
+...
+# Parameters
+- `descriptor::String`: a description of the simulation for easy referencing
+- `L_x::Float64`: width of simulation region
+- `L_y::Float64`: height of simulation region
+- `periodic_in_x::Bool = true`: if `true`, apply periodicity along x
+- `periodic_in_y::Bool = true`: if `true`, apply periodicity along y
+- `particles::Array{Particle, 1}`: all particles in simulation
+- `cell_lists::Array{CellList, 1}`: all cell lists used
+- `pair_interactions::Array{AbstractPairInteraction, 1}`: all pair interactions used
+- `external_forces::Array{AbstractExternalForce, 1}`: all external forces used
+- `dt::Float64`: timestep
+- `integrators::Array{AbstractIntegrator}`: all integrators used
+- `num_steps::Int64`: total steps to run
+- `save_interval::Int64`: store data periodically
+- `save_particles::Array{Particle, 1}`: particles to store
+- `history::Array{Array{Particle, 1}}`: history of particles
+...
+"""
 mutable struct Simulation
     descriptor::String
 
@@ -255,7 +343,6 @@ mutable struct Simulation
     num_steps::Int64
     save_interval::Int64
     save_particles::Array{Particle, 1}
-    overwrite::Bool
     history::Array{Array{Particle, 1}}
 
     function Simulation()
@@ -264,6 +351,6 @@ mutable struct Simulation
             Array{Particle, 1}(),
             Array{CellList, 1}(), Array{AbstractPairInteraction, 1}(), Array{AbstractExternalForce, 1}(),
             0.0, Array{AbstractIntegrator, 1}(),
-            0, 0, Array{Particle, 1}(), true, Array{Array{Particle, 1}, 1}())
+            0, 0, Array{Particle, 1}(), Array{Array{Particle, 1}, 1}())
     end
 end

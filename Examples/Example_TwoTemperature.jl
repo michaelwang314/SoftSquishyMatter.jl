@@ -14,9 +14,9 @@ simulation.descriptor = "Mixture of Brownian particles at two different temperat
 R = 1e-6 # radius of particle
 fraction_hot = 0.4 # the fraction of particles that are hot
 γ_trans_hot = 6 * pi * 8.9e-4 * R # friction coefficient
-D_trans_hot = 1.38e-23 * 3000 / γ_trans # diffusivity of hot particles
+D_trans_hot = 1.38e-23 * 3000 / γ_trans_hot # diffusivity of hot particles
 γ_trans_cold = 6 * pi * 8.9e-4 * R # friction coefficient
-D_trans_cold = 1.38e-23 * 300 / γ_trans # diffusivity of cold particles
+D_trans_cold = 1.38e-23 * 300 / γ_trans_cold # diffusivity of cold particles
 
 # initialize positions of particles on a triangular lattice
 # use lattice dimensions for the simulation dimensions (L_x, L_y)
@@ -39,7 +39,7 @@ pgroup_all = simulation.particles
 # Initialize cell list and Lennard-Jones interactions
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cell_list = CellList(particles = pgroup_all, L_x = simulation.L_x, L_y = simulation.L_y, cutoff = 2^(1.0 / 6.0) * 2 * R)
-lj = LennardJones(particles = pgroup_all, cell_list = cell_list, ϵ = D_trans_hot * γ_trans, multithreaded = true)
+lj = LennardJones(particles = pgroup_all, cell_list = cell_list, ϵ = D_trans_hot * γ_trans_hot, multithreaded = true)
 push!(simulation.cell_lists, cell_list)
 push!(simulation.pair_interactions, lj)
 
