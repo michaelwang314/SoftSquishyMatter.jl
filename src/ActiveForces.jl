@@ -4,7 +4,7 @@ export update_active_force!
 """
     get_active_force(active_brownian)
 
-Returns the components of the propulsion force 'γv' for active Brownian motion.
+Returns the components of the propulsion force `γv` for active Brownian motion.
 This function is used to avoid some type stability issues.
 """
 @inline function get_active_force(active_brownian::ActiveBrownian)
@@ -14,8 +14,8 @@ end
 """
     update_active_force!(active_brownian, particle; dt)
 
-Advances the active Brownian force by a timestep 'dt'.  Currently this 
-requires 'particle' as an input, which shouldn't be necessary.  This will be 
+Advances the active Brownian force by a timestep `dt`.  Currently this 
+requires `particle` as an input, which shouldn't be necessary.  This will be 
 removed in future versions.
 """
 function update_active_force!(active_brownian::ActiveBrownian, particle::Particle; dt::Float64)
@@ -31,7 +31,7 @@ end
 """
     get_active_force(run_and_tumble)
 
-Returns the components of the propulsion force 'γv' for run-and-tumble 
+Returns the components of the propulsion force `γv` for run-and-tumble 
 motion.  This function is used to avoid some type stability issues.
 """
 @inline function get_active_force(run_and_tumble::RunAndTumble)
@@ -41,8 +41,8 @@ end
 """
     update_active_force!(active_brownian, particle; dt)
 
-Advances the run-and-tumble force by a timestep 'dt'.  Currently this 
-requires 'particle' as an input, which shouldn't be necessary.  This will be 
+Advances the run-and-tumble force by a timestep `dt`.  Currently this 
+requires `particle` as an input, which shouldn't be necessary.  This will be 
 removed in future versions.
 """
 function update_active_force!(run_and_tumble::RunAndTumble, particle::Particle; dt::Float64)
