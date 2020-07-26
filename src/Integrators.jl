@@ -4,7 +4,7 @@ export update_particles!
     wrap_position(position; period)
 
 Returns a new position after applying periodic boundary conditions.  The
-periodicity is given by 'period'.  If period < 0, then no periodic boundary 
+periodicity is given by `period`.  If `period < 0`, then no periodic boundary 
 condition is applied.
 """
 @inline function wrap_position(position::Float64; period::Float64)
@@ -13,13 +13,13 @@ condition is applied.
     end
     return position
 end
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 """
     update_particles!(brownian; period_x, period_y)
 
-Advances the particles stored under 'brownian.particles' by a timestep
-'brownian.dt'.  Apply periodic boundaries with periodicity 'period_x', 
-'period_y' if period_x > 0 or period_y > 0.
+Advances the particles stored under `brownian.particles` by a timestep
+`brownian.dt`.  Apply periodic boundaries with periodicity `period_x`, 
+`period_y` if `period_x > 0` or `period_y > 0`.
 """
 function update_particles!(brownian::Brownian; period_x::Float64 = -1.0, period_y::Float64 = -1.0)
     @use_threads brownian.multithreaded for particle in brownian.particles
