@@ -352,6 +352,6 @@ mutable struct Simulation
             Array{Particle, 1}(),
             Array{CellList, 1}(), Array{AbstractPairInteraction, 1}(), Array{AbstractExternalForce, 1}(),
             0.0, Array{AbstractIntegrator, 1}(),
-            0, 0, Array{Particle, 1}(), true, Array{Array{Particle, 1}, 1}())
+            0, 0, Array{Particle, 1}(), Array{Array{Particle, 1}, 1}())
     end
 end
