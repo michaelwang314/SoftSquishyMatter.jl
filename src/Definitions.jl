@@ -70,7 +70,7 @@ export Particle
 Stores properties of a particle
 
     Particle(; ptype, x, y, θ, R, γ_trans, γ_rot, D_trans, D_rot, active_force)
-...
+
 # Arguments
 - `ptype::Symbol = :particle`: particle type
 - `x::Float64`: x position
@@ -82,7 +82,6 @@ Stores properties of a particle
 - `D_trans::Float64`: translational diffusion
 - `D_rot::Float64`: rotational diffusion
 - `active_force::Union{AbstractActiveForce, Nothing} = nothing`: active force.
-...
 """
 mutable struct Particle
     ptype::Symbol # particle type
