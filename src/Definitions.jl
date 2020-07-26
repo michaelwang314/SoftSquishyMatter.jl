@@ -224,6 +224,13 @@ export AbstractExternalForce
 
 abstract type AbstractExternalForce end
 
+"""
+Stores properties of constant force
+
+    ConstantForce(particles; f_x, f_y)
+
+Initialize a constant force `f_x`, `f_y` for 'particles'.
+"""
 struct ConstantForce <: AbstractExternalForce
     f_x::Float64
     f_y::Float64
@@ -235,6 +242,14 @@ struct ConstantForce <: AbstractExternalForce
     end
 end
 
+"""
+Stores properties of harmonic trap
+
+    HarmonicTrap(particles; x_center, y_center, k_trap)
+
+Initialize a harmonic trap with stiffness `k_trap` centered at `x_center`, 
+`y_center` for `particles`.
+"""
 struct HarmonicTrap <: AbstractExternalForce
     x_center::Float64
     y_center::Float64
@@ -255,6 +270,15 @@ export Brownian
 
 abstract type AbstractIntegrator end
 
+"""
+Stores properties of a Brownian integrator
+
+    Brownian(; particles, dt, rotations, multithreaded)
+
+Initialize a Brownian integrator for `particles` with timestep `dt`.  If 
+`rotations == true`, integrate the orientational degree of freedom.  If 
+`multithreaded == true`, split particles between threads.
+"""
 struct Brownian <: AbstractIntegrator
     dt::Float64
     particles::Array{Particle, 1}
@@ -277,6 +301,29 @@ end
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export Simulation
 
+"""
+Stores all information needed to run simulation
+
+    Simulation(...)
+...
+# Parameters
+- `descriptor::String`: a description of the simulation for easy referencing
+- `L_x::Float64`: width of simulation region
+- `L_y::Float64`: height of simulation region
+- `periodic_in_x::Bool = true`: if `true`, apply periodicity along x
+- `periodic_in_y::Bool = true`: if `true`, apply periodicity along y
+- `particles::Array{Particle, 1}`: all particles in simulation
+- `cell_lists::Array{CellList, 1}`: all cell lists used
+- `pair_interactions::Array{AbstractPairInteraction, 1}`: all pair interactions used
+- `external_forces::Array{AbstractExternalForce, 1}`: all external forces used
+- `dt::Float64`: timestep
+- `integrators::Array{AbstractIntegrator}`: all integrators used
+- `num_steps::Int64`: total steps to run
+- `save_interval::Int64`: store data periodically
+- `save_particles::Array{Particle, 1}`: particles to store
+- `history::Array{Array{Particle, 1}}`: history of particles
+...
+"""
 mutable struct Simulation
     descriptor::String
 
@@ -297,7 +344,6 @@ mutable struct Simulation
     num_steps::Int64
     save_interval::Int64
     save_particles::Array{Particle, 1}
-    overwrite::Bool
     history::Array{Array{Particle, 1}}
 
     function Simulation()
