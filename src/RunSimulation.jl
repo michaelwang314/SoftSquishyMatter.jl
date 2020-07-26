@@ -59,9 +59,7 @@ function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0
         period_y = simulation.L_y
     end
 
-    if simulation.overwrite
-        simulation.history = Array{Array{Particle, 1}, 1}()
-    end
+    simulation.history = Array{Array{Particle, 1}, 1}()
 
     println("")
     println("   +++++ PROGRESS +++++")
