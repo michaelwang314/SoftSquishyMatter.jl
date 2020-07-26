@@ -4,7 +4,7 @@ export compute_pair_interaction!
     wrap_displacement(displacement; period)
 
 Returns a new displacement after applying periodic boundary conditions.  The 
-periodicity is given by 'period'.  If period < 0, then no periodicity is
+periodicity is given by `period`.  If period < 0, then no periodicity is
 applied.
 """
 @inline function wrap_displacement(displacement::Float64; period::Float64)
@@ -17,9 +17,9 @@ end
 """
     compute_pair_interaction!(lj)
 
-Computes a Lennard-Jones force for particles stored under 'lj.particles' given
-neighbors stored in the cell list 'lj.cell_list'.  If period_x > 0 and
-period_y > 0, then apply periodic boundary conditions to the pair interaction.
+Computes a Lennard-Jones force for particles stored under `lj.particles` given
+neighbors stored in the cell list `lj.cell_list`.  If `period_x > 0` and
+`period_y > 0`, then apply periodic boundary conditions to the pair interaction.
 """
 function compute_pair_interaction!(lj::LennardJones; period_x::Float64 = -1.0, period_y::Float64 = -1.0)
     @use_threads lj.multithreaded for particle in lj.particles
