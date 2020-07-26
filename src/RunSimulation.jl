@@ -5,9 +5,12 @@ export run_simulation
 export save_simulation
 export load_simulation
 
-#=
-Macro for using multithreading
-=#
+"""
+    @use_threads multithreaded ...
+
+Applies Threads.@threads if multithreaded == true.  This is mostly used to 
+shorten code.
+"""
 macro use_threads(multithreaded::Union{Expr, Symbol}, expr::Expr)
     esc(quote
         if $multithreaded
@@ -18,9 +21,11 @@ macro use_threads(multithreaded::Union{Expr, Symbol}, expr::Expr)
     end)
 end
 
-#=
-Convert seconds to hr:min:sec format
-=#
+"""
+    hr_min_sec(time)
+
+Converts 'time' (seconds) to 00:00:00 (hr:min:sec) format.
+"""
 function hr_min_sec(time::Float64)
     hours = trunc(Int64, time / 3600.0)
     minutes = trunc(Int64, mod(time, 3600.0) / 60.0)
@@ -29,9 +34,12 @@ function hr_min_sec(time::Float64)
     return string(hours < 10 ? "0$hours" : "$hours", ":", minutes < 10 ? "0$minutes" : "$minutes", ":", seconds < 10 ? "0$seconds" : "$seconds")
 end
 
-#=
-Run simulation
-=#
+"""
+    run_simulation(simulation; message_interval, save_to)
+
+Run the simulation.  'message_interval' (seconds) controls how often a time 
+update is printed.  'save_to' is the file to which 'simulation' is saved.
+"""
 function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_to::String = "")
     println("")
     println("   +++++ SIMULATION STARTED +++++")
@@ -102,9 +110,11 @@ function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0
     println("")
 end
 
-#=
-Save simulation
-=#
+"""
+    save_simulation(simulation; file)
+
+Saves 'simulation' to 'file'.
+"""
 function save_simulation(simulation::Simulation; file::String)
     if !isdir(dirname(file))
         mkpath(dirname(file))
@@ -118,9 +128,11 @@ function save_simulation(simulation::Simulation; file::String)
     println("")
 end
 
-#=
-Load Simulation
-=#
+"""
+    load_simulation(; file)
+
+Loads simulation from 'file'
+"""
 function load_simulation(; file::String)
     simulation = begin
         open(file, "r") do f
