@@ -8,7 +8,7 @@ export load_simulation
 """
     @use_threads multithreaded ...
 
-Applies Threads.@threads if multithreaded == true.  This is mostly used to 
+Applies `Threads.@threads` if `multithreaded == true`.  This is mostly used to 
 shorten code.
 """
 macro use_threads(multithreaded::Union{Expr, Symbol}, expr::Expr)
@@ -24,7 +24,7 @@ end
 """
     hr_min_sec(time)
 
-Converts 'time' (seconds) to 00:00:00 (hr:min:sec) format.
+Converts `time` (seconds) to 00:00:00 (hr:min:sec) format.
 """
 function hr_min_sec(time::Float64)
     hours = trunc(Int64, time / 3600.0)
@@ -37,8 +37,8 @@ end
 """
     run_simulation(simulation; message_interval, save_to)
 
-Run the simulation.  'message_interval' (seconds) controls how often a time 
-update is printed.  'save_to' is the file to which 'simulation' is saved.
+Run the simulation.  `message_interval` (seconds) controls how often a time 
+update is printed.  `save_to` is the file to which `simulation` is saved.
 """
 function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_to::String = "")
     println("")
@@ -111,7 +111,7 @@ end
 """
     save_simulation(simulation; file)
 
-Saves 'simulation' to 'file'.
+Saves `simulation` to `file`.
 """
 function save_simulation(simulation::Simulation; file::String)
     if !isdir(dirname(file))
@@ -129,7 +129,7 @@ end
 """
     load_simulation(; file)
 
-Loads simulation from 'file'
+Loads simulation from `file`
 """
 function load_simulation(; file::String)
     simulation = begin
