@@ -1,9 +1,11 @@
 export get_active_force
 export update_active_force!
 
-#=
-Active brownian
-=#
+"""
+    get_active_force(active_brownian)
+
+Returns the x, y components of the propulsion force γv.  This function
+"""
 @inline function get_active_force(active_brownian::ActiveBrownian)
     return active_brownian.γv_x, active_brownian.γv_y
 end
