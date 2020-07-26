@@ -1,16 +1,21 @@
-#=
-################################################################################
-Active/Self-propelling forces
-    - Active Brownian
-    - Run-and-tumble
-################################################################################
-=#
 export AbstractActiveForce
 export ActiveBrownian
 export RunAndTumble
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Active forces
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 abstract type AbstractActiveForce end
 
+"""
+Stores properties of active Brownian force
+
+    ActiveBrownian(; γv, D_rot, align)
+
+Initializes an active Brownian force with propulsion `γv`, rotational diffusion 
+`D_rot`.  If `align == true`, the active Brownian force will align with the 
+particle's orientation and allow us to introduce orientational interactions.
+"""
 mutable struct ActiveBrownian <: AbstractActiveForce
     γv_x::Float64
     γv_y::Float64
@@ -28,6 +33,15 @@ mutable struct ActiveBrownian <: AbstractActiveForce
     end
 end
 
+"""
+Stores properties of run-and-tumble force
+
+    RunAndTumble(; γv, α, align)
+
+Initializes a run-and-tumble force with propulsion `γv` and tumble rate `α`. If 
+`align == true`, the active Brownian force will align with the particle's 
+orientation and allow us to introduce orientational interactions.
+"""
 mutable struct RunAndTumble <: AbstractActiveForce
     γv_x::Float64
     γv_y::Float64
@@ -47,13 +61,29 @@ mutable struct RunAndTumble <: AbstractActiveForce
     end
 end
 
-#=
-################################################################################
-Particle
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Particle
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export Particle
 
+"""
+Stores properties of a particle
+
+    Particle(; ptype, x, y, θ, R, γ_trans, γ_rot, D_trans, D_rot, active_force)
+...
+# Arguments
+- `ptype::Symbol = :particle`: particle type
+- `x::Float64`: x position
+- `y::Float64`: y position
+- `θ::Float64 = 2 * pi * rand()`: in-plane orientation
+- `R::Float64`: radius
+- `γ_trans::Float64 = -1.0`: translational friction.  If `γ_trans < 0`, use `γ_trans = 6 * pi * 8.9e-4 * R`.
+- `γ_rot::Float64 = -1.0`: rotational friction. If `γ_rot < 0`, use `γ_rot = 8 * pi * 8.9e-4 * R^3`.
+- `D_trans::Float64`: translational diffusion
+- `D_rot::Float64`: rotational diffusion
+- `active_force::Union{AbstractActiveForce, Nothing} = nothing`: active force.
+...
+"""
 mutable struct Particle
     ptype::Symbol # particle type
 
@@ -90,13 +120,20 @@ mutable struct Particle
     end
 end
 
-#=
-################################################################################
-CellList for finding neighbors
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Cell list
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export CellList
 
+"""
+Stores properties of a cell list
+
+    CellList(; particles, L_x, L_y, cutoff)
+
+Creates a cell list for `particles` in region/simulation with dimensions 
+`L_x`, `L_y`.  `cutoff` gives the approximate size of the cells, the actual size 
+of which is chosen so that an integer number of cells fit in each dimension.
+"""
 struct CellList
     start_pid::Array{Int64, 2}
     next_pid::Array{Int64, 1}
@@ -131,17 +168,29 @@ struct CellList
     end
 end
 
-#=
-################################################################################
-Types of pair interactions
-    - Lennard-Jones
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Pair interactions
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractPairInteraction
 export LennardJones
 
 abstract type AbstractPairInteraction end
 
+"""
+Stores properties of a Lennard-Jones interaction
+
+    LennardJones(; particles, cell_list, ϵ, σ, cutoff, multithreaded, use_newton_3rd)
+...
+# Arguments
+- `particles::Array{Particle, 1}`: particles to compute Lennard-Jones for
+- `cell_list::CellList`: cell list for neighbors
+- `ϵ::Float64`: energy scale of Lennard-Jones potential
+- `σ::Float64 = -1.0`: length scale of Lennard-Jones potential.  If `σ < 0`, use diameters of interacting particles.
+- `cutoff::Float64 = -1.0`: distance to truncate interaction.  If `cutoff < 0`, use `cutoff = 2^(1.0 / 6.0) * σ`, which corresponds to WCA interaction.
+- `multithreaded::Bool = false`: if `true`, split particles between threads.
+- `use_newton_3rd::Bool = false`: if `true`, use Newton's 3rd law to also compute force on neighbors.  Be CAREFUL with overcounting and race conditions with threads.
+...
+"""
 struct LennardJones <: AbstractPairInteraction
     ϵ::Float64
     σ::Float64
@@ -161,18 +210,16 @@ struct LennardJones <: AbstractPairInteraction
 end
 
 struct DipoleDipole <: AbstractPairInteraction
-    #to be added
+    # TO BE ADDED
 end
 
 struct HarmonicBond <: AbstractPairInteraction
-    #to be added
+    # TO BE ADDED
 end
 
-#=
-################################################################################
-External forces
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# External forces
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractExternalForce
 
 abstract type AbstractExternalForce end
@@ -200,12 +247,9 @@ struct HarmonicTrap <: AbstractExternalForce
     end
 end
 
-#=
-################################################################################
-Integrators
-    - Brownian
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Integrators
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractIntegrator
 export Brownian
 
@@ -228,11 +272,9 @@ struct Langevin <: AbstractIntegrator
     # to be added
 end
 
-#=
-################################################################################
-For storing the simulation
-################################################################################
-=#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Simulation data
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export Simulation
 
 mutable struct Simulation
