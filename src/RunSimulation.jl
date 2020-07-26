@@ -39,8 +39,7 @@ function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0
     println("Number of threads available: ", Threads.nthreads())
     println("")
     println("Number of particles: ", length(simulation.particles))
-    println("Simulation dimensions: (", simulation.L_x, ",", simulation.L_y,")")
-    println("Periodic force calculation in (x,y): (", simulation.periodic_in_x, ",", simulation.periodic_in_y, ")")
+    println("Description: ", simulation.descriptor)
     println("")
 
     period_x = -1.0

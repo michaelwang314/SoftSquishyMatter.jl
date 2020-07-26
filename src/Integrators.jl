@@ -28,13 +28,14 @@ function update_particles!(integrator::Brownian; period_x::Float64 = -1.0, perio
         particle.x = wrap_position(particle.x + dtγ_trans * particle.f_x + amplitude * randn(), period = period_x)
         particle.y = wrap_position(particle.y + dtγ_trans * particle.f_y + amplitude * randn(), period = period_y)
 
+        particle.f_x = 0.0
+        particle.f_y = 0.0
+
         if integrator.rotations
             dtγ_rot = integrator.dt / particle.γ_rot
             particle.θ += dtγ_rot * particle.t_θ + sqrt(2 * particle.D_rot * integrator.dt) * randn()
+            
+            particle.t_θ = 0.0
         end
-
-        particle.f_x = 0.0
-        particle.f_y = 0.0
-        particle.t_θ = 0.0
     end
 end

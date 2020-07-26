@@ -160,6 +160,14 @@ struct LennardJones <: AbstractPairInteraction
     end
 end
 
+struct DipoleDipole <: AbstractPairInteraction
+    #to be added
+end
+
+struct HarmonicBond <: AbstractPairInteraction
+    #to be added
+end
+
 #=
 ################################################################################
 External forces
@@ -214,6 +222,10 @@ struct Brownian <: AbstractIntegrator
     function Brownian(; particles::Array{Particle, 1}, dt::Float64, rotations::Bool = false, multithreaded::Bool = false)
         new(dt, particles, rotations, multithreaded)
     end
+end
+
+struct Langevin <: AbstractIntegrator
+    # to be added
 end
 
 #=

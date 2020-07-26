@@ -6,7 +6,7 @@ export plot_frame!
 #=
 Plot a frame
 =#
-function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int64},
+function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int64} = (800, 800),
                                                     xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
                                                     colors::Dict{Symbol, String} = Dict(:particle => "black"),
                                                     save_as::String)
@@ -15,7 +15,7 @@ function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int
     end
 
     plot(size = frame_size, legend = false, axis = false, grid = false, aspectratio = 1, xlim = xlim, ylim = ylim)
-    θ = LinRange(0, 2 * pi, 20)
+    θ = LinRange(0, 2 * pi, 15)
     circle = [cos.(θ), sin.(θ)]
     for particle in particles
         x = particle.x
@@ -29,7 +29,7 @@ function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int
 
         if !isnothing(particle.active_force)
             if (particle.active_force isa ActiveBrownian) || (particle.active_force isa RunAndTumble)
-                plot!([x, x + 1.5 * particle.R * cos(particle.active_force.θ::Float64)], [y, y + 1.5 * particle.R * sin(particle.active_force.θ::Float64)], color = "red")
+                plot!([x, x + particle.R * cos(particle.active_force.θ::Float64)], [y, y + particle.R * sin(particle.active_force.θ::Float64)], color = "red")
             end
         end
     end
@@ -40,7 +40,7 @@ end
 #=
 Plot history
 =#
-function plot_history!(history::Array{Array{Particle, 1}, 1}; frame_size::Tuple{Int64, Int64}, xlim::Array{Float64, 1}, ylim::Array{Float64, 1}, colors::Dict{Symbol, String} = Dict(:particle => "black"), folder::String = "frames/")
+function plot_history!(history::Array{Array{Particle, 1}, 1}; frame_size::Tuple{Int64, Int64} = (600, 600), xlim::Array{Float64, 1}, ylim::Array{Float64, 1}, colors::Dict{Symbol, String} = Dict(:particle => "black"), folder::String = "frames/")
     println("")
     println("   +++++ GENERATING IMAGES +++++")
     println("")
