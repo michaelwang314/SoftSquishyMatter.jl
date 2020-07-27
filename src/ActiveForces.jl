@@ -67,8 +67,6 @@ function update_active_force(run_and_tumble::RunAndTumble; particle_orientation:
              run_and_tumble.γv_y = run_and_tumble.γv * sin(run_and_tumble.θ)
         end
     end
-    # these cos and sin don't need to be computed every step.  Reorganize this function...
-
 
     return particle_orientation
 end
