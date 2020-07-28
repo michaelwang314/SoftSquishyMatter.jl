@@ -3,7 +3,7 @@ A simple package for simulating soft matter things.  At the moment, the package 
 
 This is mostly just a fun/educational and (hopefully) long-term project!
 
-| Lennard-Jones | Two-temperature Mixture | Bi-dispersed Mixture |
+| Lennard-Jones | Two-temperature Mixture | Poly-dispersed Mixture |
 | ------------- | --------------- | -------------- |
 | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_LennardJonesFluid.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_TwoTemperature.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_PolyDispersed.gif" width="250"> |
 
