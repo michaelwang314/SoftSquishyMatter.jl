@@ -3,6 +3,11 @@ A simple package for simulating soft matter things.  At the moment, the package 
 
 This is mostly just a fun/educational and (hopefully) long-term project!
 
+<p align="center">
+  <img src="https://media.giphy.com/media/o65WgXSDBVY1G/giphy.gif" width="100" height="100">
+  <img src="https://media.giphy.com/media/o65WgXSDBVY1G/giphy.gif" width="100" height="100">
+</p>
+
 ## Installation
 To download, open Julia command line, press `]`, and use `add`
 ```
