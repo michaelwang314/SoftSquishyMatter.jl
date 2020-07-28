@@ -56,7 +56,8 @@ simulation.save_particles = pgroup_all
 run_simulation(simulation; save_to = "out/Example_RunAndTumble_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OPTIONAL: Load simulation data and make each saved frame of simulation
+# OPTIONAL: Load simulation data and animate the simulation.  Individual frames
+# can be saved with plot_frame! or plot_frames!
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation = load_simulation(file = "out/Example_RunAndTumble_data.out")
-plot_frames!(simulation.history; xlim = [0.0, simulation.L_x], ylim = [0.0, simulation.L_y], colors = Dict(:runandtumble => "black"), folder = "frames/Example_RunAndTumble/")
+animate_frames!(simulation.history; xlim = [0.0, simulation.L_x], ylim = [0.0, simulation.L_y], colors = Dict(:runandtumble => "black"), save_as = "frames/Example_RunAndTumble.gif")
