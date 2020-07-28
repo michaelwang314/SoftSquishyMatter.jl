@@ -34,4 +34,4 @@ Just add the line
 ```
 using SoftSquishyMatter
 ```
-There are several example simulations in the [Example folder](https://github.com/michaelwang314/SoftSquishyMatter.jl/tree/master/Examples).
+There are several example simulations (those shown above) in the [Example folder](https://github.com/michaelwang314/SoftSquishyMatter.jl/tree/master/Examples).
