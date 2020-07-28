@@ -82,7 +82,7 @@ simulation.save_particles = pgroup_all
 run_simulation(simulation; save_to = "out/Example_RunAndTumbleFunnels_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Load simulation data and make each saved frame of simulation
+# OPTIONAL: Load simulation data and make each saved frame of simulation
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation = load_simulation(file = "out/Example_RunAndTumbleFunnels_data.out")
 plot_history!(simulation.history; xlim = [0.0, simulation.L_x], ylim = [0.0, simulation.L_y], colors = Dict(:boundary => "black", :swimmer => "green"), folder = "frames/Example_RunAndTumbleFunnels/")

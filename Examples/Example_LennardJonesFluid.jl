@@ -55,7 +55,7 @@ simulation.save_particles = pgroup_all
 run_simulation(simulation; save_to = "out/Example_LennardJonesFluid_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Load simulation data and make each saved frame of simulation
+# OPTIONAL: Load simulation data and make each saved frame of simulation
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation = load_simulation(file = "out/Example_LennardJonesFluid_data.out")
 plot_history!(simulation.history; frame_size = (600, 600), xlim = [0.0, simulation.L_x], ylim = [0.0, simulation.L_y], colors = Dict(:passivecolloid => "black"), folder = "frames/Example_LennardJonesFluid/")

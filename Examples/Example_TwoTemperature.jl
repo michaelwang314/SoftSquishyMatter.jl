@@ -63,7 +63,7 @@ simulation.save_particles = pgroup_all
 run_simulation(simulation; save_to = "out/Example_TwoTemperature_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Load simulation data and make each saved frame of simulation
+# OPTIONAL: Load simulation data and make each saved frame of simulation
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation = load_simulation(file = "out/Example_TwoTemperature_data.out")
 plot_history!(simulation.history; xlim = [0.0, simulation.L_x], ylim = [0.0, simulation.L_y], colors = Dict(:cold => "blue", :hot => "red"), folder = "frames/Example_TwoTemperature/")
