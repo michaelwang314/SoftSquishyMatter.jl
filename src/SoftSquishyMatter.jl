@@ -1,15 +1,15 @@
 module SoftSquishyMatter
 
-include("Definitions.jl")
-include("RunSimulation.jl")
-include("ActiveForces.jl")
-include("Particle.jl")
-include("Integrators.jl")
-include("CellList.jl")
-include("PairInteractions.jl")
-include("ExternalForces.jl")
+include("definitions.jl")
+include("runsimulation.jl")
+include("activeforces.jl")
+include("particle.jl")
+include("integrators.jl")
+include("celllist.jl")
+include("pairinteractions.jl")
+include("externalforces.jl")
 
-include("Analysis/Plotter.jl")
+include("analysis/plotter.jl")
 
 println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 println("Simulation Package Loaded")
