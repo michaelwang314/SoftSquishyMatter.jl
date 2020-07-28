@@ -4,11 +4,11 @@ A simple package for simulating soft matter things.  At the moment, the package 
 This is mostly just a fun/educational and (hopefully) long-term project!
 
 <p align="center">
-  <img src="https://github.com/michaelwang314/simulation-storage/tree/master/Example_gifs/Example_LennardJonesFluid.gif" width="100" height="100">
-  <img src="https://github.com/michaelwang314/simulation-storage/tree/master/Example_gifs/Example_TwoTemperature.gif" width="100" height="100">
-  <img src="https://github.com/michaelwang314/simulation-storage/tree/master/Example_gifs/Example_PolyDispersed.gif" width="100" height="100">
-  <img src="https://github.com/michaelwang314/simulation-storage/tree/master/Example_gifs/Example_RunAndTumble.gif" width="100" height="100">
-  <img src="https://github.com/michaelwang314/simulation-storage/tree/master/Example_gifs/Example_RunAndTumbleFunnels.gif" width="100" height="100">
+  <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_LennardJonesFluid.gif" width="200" height="200">
+  <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_TwoTemperature.gif" width="200" height="200">
+  <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_PolyDispersed.gif" width="200" height="200">
+  <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumble.gif" width="200" height="200">
+  <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumbleFunnels.gif" width="200" height="200">
 </p>
 
 More simulations can be found in [this repository](https://github.com/michaelwang314/simulation-storage).
