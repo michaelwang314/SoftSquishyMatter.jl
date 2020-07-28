@@ -7,7 +7,7 @@ This is mostly just a fun/educational and (hopefully) long-term project!
   <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_LennardJonesFluid.gif" width="300" height="300">
   <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_TwoTemperature.gif" width="300" height="300">
   <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_PolyDispersed.gif" width="300" height="300">
-  <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumble.gif" width="200" height="200">
+  <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumble.gif" width="300" height="300">
   <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumbleFunnels.gif" width="300" height="300">
 </p>
 
