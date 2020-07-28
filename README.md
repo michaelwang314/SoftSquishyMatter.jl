@@ -3,13 +3,17 @@ A simple package for simulating soft matter things.  At the moment, the package 
 
 This is mostly just a fun/educational and (hopefully) long-term project!
 
-| Lennard-Jones | Two-temperature Mixture | Poly-dispersed Mixture |
+| Lennard-Jones | Two-temperature Mixture | Bi-dispersed Mixture |
 | ------------- | --------------- | -------------- |
 | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_LennardJonesFluid.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_TwoTemperature.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_PolyDispersed.gif" width="250"> |
 
-| Run-and-tumble Particles | Run-and-tumble Particles with Funnels |
+| Run-and-tumble Particles | Active Brownian Particles |
+| ------------------------ | ------------------------- |
+| <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumble.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_ActiveBrownian.gif" width="250">
+
+| Run-and-tumble Particles with Funnels | Active Brownian Particles with Funnels |
 | ------------------------ | ------------------------------------- |
-| <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumble.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumbleFunnels.gif" width="400"> |
+| <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumbleFunnels.gif" width="400"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_ActiveBrownianFunnels.gif" width="400"> |
 
 More simulations can be found in [this repository](https://github.com/michaelwang314/simulation-storage).
 
