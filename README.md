@@ -3,10 +3,19 @@ A simple package for simulating soft matter things.  At the moment, the package 
 
 This is mostly just a fun/educational and (hopefully) long-term project!
 
-<p align="center">
-  <img src="https://media.giphy.com/media/o65WgXSDBVY1G/giphy.gif" width="100" height="100">
-  <img src="https://media.giphy.com/media/o65WgXSDBVY1G/giphy.gif" width="100" height="100">
-</p>
+| Lennard-Jones | Two-temperature Mixture | Bi-dispersed Mixture |
+| ------------- | --------------- | -------------- |
+| <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_LennardJonesFluid.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_TwoTemperature.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_PolyDispersed.gif" width="250"> |
+
+| Run-and-tumble Particles | Active Brownian Particles |
+| ------------------------ | ------------------------- |
+| <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumble.gif" width="250"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_ActiveBrownian.gif" width="250">
+
+| Run-and-tumble Particles with Funnels | Active Brownian Particles with Funnels |
+| ------------------------ | ------------------------------------- |
+| <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumbleFunnels.gif" width="400"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_ActiveBrownianFunnels.gif" width="400"> |
+
+Simulations can be found in [this repository](https://github.com/michaelwang314/simulation-storage).
 
 ## Installation
 To download, open Julia command line, press `]`, and use `add`
@@ -25,4 +34,4 @@ Just add the line
 ```
 using SoftSquishyMatter
 ```
-There are several example simulations in the [Example folder](https://github.com/michaelwang314/SoftSquishyMatter.jl/tree/master/Examples).
+There are several example simulations (those shown above) in the [Example folder](https://github.com/michaelwang314/SoftSquishyMatter.jl/tree/master/Examples).
