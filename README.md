@@ -15,7 +15,7 @@ This is mostly just a fun/educational and (hopefully) long-term project!
 | ------------------------ | ------------------------------------- |
 | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_RunAndTumbleFunnels.gif" width="400"> | <img src="https://github.com/michaelwang314/simulation-storage/blob/master/Example_gifs/Example_ActiveBrownianFunnels.gif" width="400"> |
 
-More simulations can be found in [this repository](https://github.com/michaelwang314/simulation-storage).
+Simulations can be found in [this repository](https://github.com/michaelwang314/simulation-storage).
 
 ## Installation
 To download, open Julia command line, press `]`, and use `add`
