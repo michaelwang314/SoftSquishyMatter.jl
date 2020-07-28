@@ -18,7 +18,7 @@ function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int
     end
 
     plot(size = frame_size, legend = false, axis = false, grid = false, aspectratio = 1, xlim = xlim, ylim = ylim)
-    θ = LinRange(0, 2 * pi, 15)
+    θ = LinRange(0, 2 * pi, 20)
     circle = (xs = cos.(θ), ys = sin.(θ))
     for particle in particles
         x = particle.x
