@@ -8,6 +8,8 @@ This is mostly just a fun/educational and (hopefully) long-term project!
   <img src="https://media.giphy.com/media/o65WgXSDBVY1G/giphy.gif" width="100" height="100">
 </p>
 
+More simulations can be found in [this repository](https://github.com/michaelwang314/simulation-storage).
+
 ## Installation
 To download, open Julia command line, press `]`, and use `add`
 ```
