@@ -110,7 +110,7 @@ end
     linealpha --> 1
     seriestype := :shape
     seriescolor --> color
-    seriesalpha --> 0.2
+    seriesalpha --> 0.3
 
     size --> size
     aspect_ratio --> 1
