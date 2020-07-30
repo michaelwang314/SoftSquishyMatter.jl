@@ -1,10 +1,10 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Active forces
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractActiveForce
 export ActiveBrownian
 export RunAndTumble
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Active forces
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 abstract type AbstractActiveForce end
 
 """
@@ -12,8 +12,8 @@ Stores properties of active Brownian force
 
     ActiveBrownian(; γv, D_rot, align)
 
-Initializes an active Brownian force with propulsion `γv`, rotational diffusion 
-`D_rot`.  If `align == true`, the active Brownian force will align with the 
+Initializes an active Brownian force with propulsion `γv`, rotational diffusion
+`D_rot`.  If `align == true`, the active Brownian force will align with the
 particle's orientation and allow us to introduce orientational interactions.
 """
 mutable struct ActiveBrownian <: AbstractActiveForce
@@ -38,8 +38,8 @@ Stores properties of run-and-tumble force
 
     RunAndTumble(; γv, α, align)
 
-Initializes a run-and-tumble force with propulsion `γv` and tumble rate `α`. If 
-`align == true`, the active Brownian force will align with the particle's 
+Initializes a run-and-tumble force with propulsion `γv` and tumble rate `α`. If
+`align == true`, the active Brownian force will align with the particle's
 orientation and allow us to introduce orientational interactions.
 """
 mutable struct RunAndTumble <: AbstractActiveForce
@@ -129,8 +129,8 @@ Stores properties of a cell list
 
     CellList(; particles, L_x, L_y, cutoff)
 
-Creates a cell list for `particles` in region/simulation with dimensions 
-`L_x`, `L_y`.  `cutoff` gives the approximate size of the cells, the actual size 
+Creates a cell list for `particles` in region/simulation with dimensions
+`L_x`, `L_y`.  `cutoff` gives the approximate size of the cells, the actual size
 of which is chosen so that an integer number of cells fit in each dimension.
 """
 struct CellList
@@ -172,6 +172,7 @@ end
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractPairInteraction
 export LennardJones
+export HarmonicBond
 
 abstract type AbstractPairInteraction end
 
@@ -208,11 +209,29 @@ struct LennardJones <: AbstractPairInteraction
     end
 end
 
-struct DipoleDipole <: AbstractPairInteraction
-    # TO BE ADDED
+"""
+Stores properties of a harmonic bond between pair of particles
+
+    HarmonicBond(; pairs, k_bond, l_rest, multithreaded)
+
+Initialize a harmonic bond between `pairs` of particles with stiffness `k_bond`
+and rest length `l_rest`.  `multithreaded` should only really be used for dimers
+to avoid race conditions.
+"""
+struct HarmonicBond <: AbstractPairInteraction
+    k_bond::Float64
+    l_rest::Float64
+
+    particle_pairs::Array{Tuple{Particle, Particle}}
+
+    multithreaded::Bool
+
+    function HarmonicBond(; pairs::Array{Tuple{Particle, Particle}}, k_bond::Float64, l_rest::Float64 = 0.0, multithreaded::Bool = false)
+        new(k_bond, l_rest, pairs, multithreaded)
+    end
 end
 
-struct HarmonicBond <: AbstractPairInteraction
+struct DipoleDipole <: AbstractPairInteraction
     # TO BE ADDED
 end
 
@@ -246,7 +265,7 @@ Stores properties of harmonic trap
 
     HarmonicTrap(particles; x_center, y_center, k_trap)
 
-Initialize a harmonic trap with stiffness `k_trap` centered at `x_center`, 
+Initialize a harmonic trap with stiffness `k_trap` centered at `x_center`,
 `y_center` for `particles`.
 """
 struct HarmonicTrap <: AbstractExternalForce
@@ -274,8 +293,8 @@ Stores properties of a Brownian integrator
 
     Brownian(; particles, dt, rotations, multithreaded)
 
-Initialize a Brownian integrator for `particles` with timestep `dt`.  If 
-`rotations == true`, integrate the orientational degree of freedom.  If 
+Initialize a Brownian integrator for `particles` with timestep `dt`.  If
+`rotations == true`, integrate the orientational degree of freedom.  If
 `multithreaded == true`, split particles between threads.
 """
 struct Brownian <: AbstractIntegrator
