@@ -45,7 +45,11 @@ end
 
 Plots each frame of `history`.
 """
-function plot_frames!(history::Array{Array{Particle, 1}, 1}; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing, frame_size::Tuple{Int64, Int64} = (600, 600), xlim::Array{Float64, 1}, ylim::Array{Float64, 1}, colors::Dict{Symbol, String} = Dict(:particle => "black"), folder::String = "frames/")
+function plot_frames!(history::Array{Array{Particle, 1}, 1}; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
+                                                             frame_size::Tuple{Int64, Int64} = (600, 600),
+                                                             xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
+                                                             colors::Dict{Symbol, String} = Dict(:particle => "black"),
+                                                             folder::String = "frames/")
     if isnothing(frame_nums)
         frame_nums = [f for f = 1 : length(history)]
     end
@@ -66,7 +70,12 @@ end
 
 ...
 """
-function animate_frames!(history::Array{Array{Particle, 1}, 1}; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing, frame_size::Tuple{Int64, Int64} = (600, 600), xlim::Array{Float64, 1}, ylim::Array{Float64, 1}, colors::Dict{Symbol, String} = Dict(:particle => "black"), fps::Int64 = 10, save_as::String = "simulation.gif")
+function animate_frames!(history::Array{Array{Particle, 1}, 1}; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
+                                                                frame_size::Tuple{Int64, Int64} = (600, 600),
+                                                                xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
+                                                                colors::Dict{Symbol, String} = Dict(:particle => "black"),
+                                                                fps::Int64 = 10,
+                                                                save_as::String = "frames/simulation.gif")
     if !isdir(dirname(save_as))
         mkpath(dirname(save_as))
     end
