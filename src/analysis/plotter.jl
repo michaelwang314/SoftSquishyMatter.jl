@@ -1,88 +1,79 @@
 using Plots
 
-export plot_frame!
 export plot_frames!
 export animate_frames!
 
 """
-    plot_frame!(particles; frame_size, xlim, ylim, colors, save_as)
+    plot_frames!(simulation; frame_nums, frame_size, xlim, ylim, colors, save_to)
 
-Displays current configuration of `particles`.
+Plots each frame of `simulation.history`.
 """
-function plot_frame!(particles::Array{Particle, 1}; frame_size::Tuple{Int64, Int64} = (600, 600),
-                                                    xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
-                                                    colors::Dict{Symbol, String} = Dict(:particle => "black"),
-                                                    save_as::String)
-    if !isdir(dirname(save_as))
-        mkpath(dirname(save_as))
+function plot_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
+                                              frame_size::Tuple{Int64, Int64} = (600, 600),
+                                              xlim::Union{Array{Float64, 1}, Nothing} = nothing, ylim::Union{Array{Float64, 1}, Nothing} = nothing,
+                                              colors::Dict{Symbol, String} = Dict(:particle => "black"),
+                                              save_to::String = "frames/")
+    if !isdir(dirname(save_to))
+        mkpath(dirname(save_to))
     end
 
-    plot(size = frame_size, legend = false, axis = false, grid = false, aspectratio = 1, xlim = xlim, ylim = ylim)
+    frame_nums = isnothing(frame_nums) ? [f for f = 1 : length(simulation.history)] : frame_nums
+    xlim = isnothing(xlim) ? [0.0, simulation.L_x] : xlim
+    ylim = isnothing(ylim) ? [0.0, simulation.L_y] : ylim
+
     θ = LinRange(0, 2 * pi, 20)
-    circle = (xs = cos.(θ), ys = sin.(θ))
-    for particle in particles
-        x = particle.x
-        y = particle.y
-
-        cx = particle.R * circle.xs .+ x
-        cy = particle.R * circle.ys .+ y
-
-        color = colors[particle.ptype]
-        plot!(cx, cy, seriestype = [:shape,], color = color, linecolor = color, fillalpha = 0.3)
-
-        if !isnothing(particle.active_force)
-            af_x, af_y = get_active_force(particle.active_force)
-            mag = sqrt(af_x^2 + af_y^2)
-            plot!([x, x + particle.R * af_x / mag], [y, y + particle.R * af_y / mag], color = "red")
-        end
-    end
-    savefig(save_as)
-    println(save_as, " done")
-end
-
-"""
-    plot_frames!(history; frame_nums, frame_size, xlim, ylim, colors, folder)
-
-Plots each frame of `history`.
-"""
-function plot_frames!(history::Array{Array{Particle, 1}, 1}; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
-                                                             frame_size::Tuple{Int64, Int64} = (600, 600),
-                                                             xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
-                                                             colors::Dict{Symbol, String} = Dict(:particle => "black"),
-                                                             folder::String = "frames/")
-    if isnothing(frame_nums)
-        frame_nums = [f for f = 1 : length(history)]
-    end
+    unit_circle = (xs = cos.(θ), ys = sin.(θ))
 
     println("")
     println("   +++++ GENERATING IMAGES +++++")
     println("")
+
     for f in frame_nums
-        plot_frame!(history[f]; frame_size = frame_size, xlim = xlim, ylim = ylim, colors = colors, save_as = string(folder, "Frame $f.png"))
+        plot(size = frame_size, legend = false, axis = false, grid = false, aspect_ratio = 1, xlim = xlim, ylim = ylim)
+        for particle in simulation.history[f]
+            x = particle.x
+            y = particle.y
+
+            cx = particle.R * unit_circle.xs .+ x
+            cy = particle.R * unit_circle.ys .+ y
+
+            color = colors[particle.ptype]
+            plot!(cx, cy, seriestype = [:shape,], color = color, fillalpha = 0.3)
+
+            if !isnothing(particle.active_force)
+                af_x, af_y = get_active_force(particle.active_force)
+                scale = particle.R / sqrt(af_x^2 + af_y^2)
+                plot!([x, x + scale * af_x], [y, y + scale * af_y], color = "red")
+            end
+        end
+        save_as = string(save_to, "Frame $f.png")
+        savefig(save_as)
+        println(save_as, " done")
     end
+
     println("")
     println("   +++++ IMAGES GENERATED +++++")
     println("")
 end
 
 """
-    animate_frames!(...)
+    animate_frames!(simulation; frame_num, frame_size, xlim, ylim, colors, fps, save_as)
 
-...
+Generates a gif of the simulation.
 """
-function animate_frames!(history::Array{Array{Particle, 1}, 1}; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
-                                                                frame_size::Tuple{Int64, Int64} = (600, 600),
-                                                                xlim::Array{Float64, 1}, ylim::Array{Float64, 1},
-                                                                colors::Dict{Symbol, String} = Dict(:particle => "black"),
-                                                                fps::Int64 = 10,
-                                                                save_as::String = "frames/simulation.gif")
+function animate_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
+                                                 frame_size::Tuple{Int64, Int64} = (600, 600),
+                                                 xlim::Union{Array{Float64, 1}, Nothing} = nothing, ylim::Union{Array{Float64, 1}, Nothing} = nothing,
+                                                 colors::Dict{Symbol, String} = Dict(:particle => "black"),
+                                                 fps::Int64 = 10,
+                                                 save_as::String = "frames/simulation.gif")
     if !isdir(dirname(save_as))
         mkpath(dirname(save_as))
     end
 
-    if isnothing(frame_nums)
-        frame_nums = [f for f = 1 : length(history)]
-    end
+    frame_nums = isnothing(frame_nums) ? [f for f = 1 : length(simulation.history)] : frame_nums
+    xlim = isnothing(xlim) ? [0.0, simulation.L_x] : xlim
+    ylim = isnothing(ylim) ? [0.0, simulation.L_y] : ylim
 
     println("")
     println("   +++++ GENERATING ANIMATION +++++")
@@ -91,7 +82,7 @@ function animate_frames!(history::Array{Array{Particle, 1}, 1}; frame_nums::Unio
     circle = (xs = cos.(θ), ys = sin.(θ))
     animation = @animate for f in frame_nums
         new_frame = true
-        for particle in history[f]
+        for particle in simulation.history[f]
             draw = new_frame ? drawparticle : drawparticle!
             draw(particle, circle, colors[particle.ptype], frame_size, xlim, ylim)
             new_frame = false
@@ -136,9 +127,9 @@ end
 @recipe function f(info::DrawActiveForce)
     particle, size, xlim, ylim = info.args
     af_x, af_y = get_active_force(particle.active_force)
-    mag = sqrt(af_x^2 + af_y^2)
-    lx = [particle.x, particle.x + particle.R * af_x / mag]
-    ly = [particle.y, particle.y + particle.R * af_y / mag]
+    scale = particle.R / sqrt(af_x^2 + af_y^2)
+    lx = [particle.x, particle.x + scale * af_x]
+    ly = [particle.y, particle.y + scale * af_y]
 
     linecolor --> "red"
     linealpha --> 1

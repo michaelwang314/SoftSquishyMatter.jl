@@ -53,7 +53,7 @@ push!(simulation.integrators, brownian)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set the number of steps and which particles to save periodically
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-simulation.num_steps = trunc(Int64, 30 / simulation.dt)
+simulation.num_steps = trunc(Int64, 10 / simulation.dt)
 simulation.save_interval = trunc(Int64, 1 / simulation.dt)
 simulation.save_particles = pgroup_all
 
@@ -64,7 +64,7 @@ run_simulation(simulation; save_to = "out/Example_TwoTemperature_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # OPTIONAL: Load simulation data and animate the simulation.  Individual frames
-# can be saved with plot_frame! or plot_frames!
+# can be saved with plot_frames!
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation = load_simulation(file = "out/Example_TwoTemperature_data.out")
-animate_frames!(simulation.history; xlim = [0.0, simulation.L_x], ylim = [0.0, simulation.L_y], colors = Dict(:cold => "blue", :hot => "red"), save_as = "frames/Example_TwoTemperature.gif")
+animate_frames!(simulation; colors = Dict(:cold => "blue", :hot => "red"), fps = 1, save_as = "frames/Example_TwoTemperature.gif")

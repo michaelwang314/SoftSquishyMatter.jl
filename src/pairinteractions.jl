@@ -1,20 +1,6 @@
 export compute_pair_interaction!
 
 """
-    wrap_displacement(displacement; period)
-
-Returns a new displacement after applying periodic boundary conditions.  The
-periodicity is given by `period`.  If period < 0, then no periodicity is
-applied.
-"""
-@inline function wrap_displacement(displacement::Float64; period::Float64)
-    if period > 0.0 && abs(displacement) > period / 2
-        return displacement - sign(displacement) * period
-    end
-    return displacement
-end
-
-"""
     compute_pair_interaction!(lj)
 
 Computes a Lennard-Jones force for particles stored under `lj.particles` given
@@ -71,11 +57,8 @@ Compute a harmonic force between pairs of particles stored under
 """
 function compute_pair_interaction!(hb::HarmonicBond; period_x = -1.0, period_y = -1.0)
     @use_threads hb.multithreaded for (particle1, particle2) in hb.particle_pairs
-        x1, y1 = particle1.x, particle1.y
-        x2, y2 = particle2.x, particle2.y
-
-        Δx = wrap_displacement(x1 - x2; period = period_x)
-        Δy = wrap_displacement(y1 - y2; period = period_y)
+        Δx = wrap_displacement(particle1.x - particle2.x; period = period_x)
+        Δy = wrap_displacement(particle1.y - particle2.y; period = period_y)
         Δr = sqrt(Δx^2 + Δy^2)
 
         # this check isn't really necessary unless user starts the particles in the same place
