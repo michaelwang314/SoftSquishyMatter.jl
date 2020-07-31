@@ -4,6 +4,7 @@ export triangular_lattice
 export wedge
 export flat_edge
 export remove_overlaps!
+export nearest_neighbor_pairs
 
 """
     group_by_type(particles; ptype)
@@ -60,7 +61,7 @@ end
     flat_edge(; from, to, spacing)
 
 Generates a line of points from point `from` to point `to` with approximate
-spacing `spacing`.  Note that the spacing is automatically adjusted slightly so 
+spacing `spacing`.  Note that the spacing is automatically adjusted slightly so
 that points are equally spaced and include the start and end points.
 """
 function flat_edge(; from::Array{Float64, 1}, to::Array{Float64, 1}, spacing::Float64)
@@ -77,9 +78,9 @@ end
 """
     wedge(; angle, edge_length, spacing, orientation, tip)
 
-Generates a V-shaped wedge.  The angle of the wedge is `angle` with each arm a 
-length `edge_length`.  The points are separated by approximately `spacing` so 
-that the start and end points are included.  `orientation` is the angle relative 
+Generates a V-shaped wedge.  The angle of the wedge is `angle` with each arm a
+length `edge_length`.  The points are separated by approximately `spacing` so
+that the start and end points are included.  `orientation` is the angle relative
 to the x-axis and tip is the x, y location of the tip of the wedge.
 """
 function wedge(; angle::Float64, edge_length::Float64, spacing::Float64, orientation::Float64 = 0.0, tip::Array{Float64, 1})
@@ -97,18 +98,15 @@ end
 """
     remove_overlaps!(positions; fixed_positions, minimum_distance, period_x, period_y)
 
-Removes points from `positions` that are within a `minimum_distance` of points 
+Removes points from `positions` that are within a `minimum_distance` of points
 in `fixed_positions`.  This is used to avoid large forces due to overlaps.
 """
-function remove_overlaps!(positions::Array{Array{Float64, 1}, 1}; fixed_positions::Array{Array{Float64, 1}, 1}, minimum_distance::Float64, period_x::Float64, period_y::Float64)
+function remove_overlaps!(positions::Array{Array{Float64, 1}, 1}; fixed_positions::Array{Array{Float64, 1}, 1}, minimum_distance::Float64, period_x::Float64 = -1.0, period_y::Float64 = -1.0)
     indices_to_remove = Array{Int64, 1}()
     for (n, (x, y)) in enumerate(positions)
         for (xx, yy) in fixed_positions
-            Δx = x - xx
-            Δy = y - yy
-
-            Δx = abs(Δx) > period_x / 2 ? Δx - sign(Δx) * period_x : Δx
-            Δy = abs(Δy) > period_y / 2 ? Δy - sign(Δy) * period_y : Δy
+            Δx = wrap_displacement(x - xx; period = period_x)
+            Δy = wrap_displacement(y - yy; period = period_y)
 
             if Δx^2 + Δy^2 < minimum_distance^2
                 push!(indices_to_remove, n)
@@ -117,4 +115,25 @@ function remove_overlaps!(positions::Array{Array{Float64, 1}, 1}; fixed_position
         end
     end
     deleteat!(positions, indices_to_remove)
+end
+
+"""
+    nearest_neighbor_pairs(particles; maximum_distance)
+
+Returns pairs of particles that are within `maximum_distance` of eachother.
+"""
+function nearest_neighbor_pairs(particles::Array{Particle, 1}; maximum_distance::Float64 = 0.0, period_x::Float64 = -1.0, period_y::Float64 = -1.0)
+    pairs = Array{Tuple{Particle, Particle}, 1}()
+
+    N = length(particles)
+    for i = 1 : N, j = i + 1 : N
+        Δx = wrap_displacement(particles[i].x - particles[j].x; period = period_x)
+        Δy = wrap_displacement(particles[i].y - particles[j].y; period = period_y)
+
+        if Δx^2 + Δy^2 < maximum_distance^2
+            push!(pairs, (particles[i], particles[j]))
+        end
+    end
+
+    return pairs
 end

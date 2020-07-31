@@ -81,7 +81,7 @@ run_simulation(simulation, save_to = "out/Example_PolyDispersed_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # OPTIONAL: Load simulation data and animate the simulation.  Individual frames
-# can be saved with plot_frame! or plot_frames!
+# can be saved with plot_frames!
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation = load_simulation(file = "out/Example_PolyDispersed_data.out")
-animate_frames!(simulation.history; xlim = [0.0, simulation.L_x], ylim = [0.0, simulation.L_y], colors = Dict(:small => "black", :large => "blue"), save_as = "frames/Example_PolyDispersed.gif")
+animate_frames!(simulation; colors = Dict(:small => "black", :large => "blue"), save_as = "frames/Example_PolyDispersed.gif")

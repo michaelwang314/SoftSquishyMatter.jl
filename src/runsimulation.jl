@@ -1,25 +1,8 @@
 using Serialization
 
-export use_threads
 export run_simulation
 export save_simulation
 export load_simulation
-
-"""
-    @use_threads multithreaded ...
-
-Applies `Threads.@threads` if `multithreaded == true`.  This is mostly used to 
-shorten code.
-"""
-macro use_threads(multithreaded::Union{Expr, Symbol}, expr::Expr)
-    esc(quote
-        if $multithreaded
-            Threads.@threads $expr
-        else
-            $expr
-        end
-    end)
-end
 
 """
     hr_min_sec(time)
@@ -37,7 +20,7 @@ end
 """
     run_simulation(simulation; message_interval, save_to)
 
-Run the simulation.  `message_interval` (seconds) controls how often a time 
+Run the simulation.  `message_interval` (seconds) controls how often a time
 update is printed.  `save_to` is the file to which `simulation` is saved.
 """
 function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_to::String = "")

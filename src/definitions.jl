@@ -373,3 +373,54 @@ mutable struct Simulation
             0, 0, Array{Particle, 1}(), Array{Array{Particle, 1}, 1}())
     end
 end
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Useful functions and macros
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+export use_threads
+export wrap_displacement
+export wrap_positions
+
+"""
+    @use_threads multithreaded ...
+
+Applies `Threads.@threads` if `multithreaded == true`.  This is mostly used to
+shorten code.
+"""
+macro use_threads(multithreaded::Union{Expr, Symbol}, expr::Expr)
+    esc(quote
+        if $multithreaded
+            Threads.@threads $expr
+        else
+            $expr
+        end
+    end)
+end
+
+"""
+    wrap_displacement(displacement; period)
+
+Returns a new displacement after applying periodic boundary conditions.  The
+periodicity is given by `period`.  If period < 0, then no periodicity is
+applied.
+"""
+@inline function wrap_displacement(displacement::Float64; period::Float64)
+    if period > 0.0 && abs(displacement) > period / 2
+        return displacement - sign(displacement) * period
+    end
+    return displacement
+end
+
+"""
+    wrap_position(position; period)
+
+Returns a new position after applying periodic boundary conditions.  The
+periodicity is given by `period`.  If `period < 0`, then no periodic boundary
+condition is applied.
+"""
+@inline function wrap_position(position::Float64; period::Float64)
+    if period > 0.0
+        return mod(position, period)
+    end
+    return position
+end
