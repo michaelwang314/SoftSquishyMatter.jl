@@ -13,7 +13,7 @@ include("analysis/plotter.jl")
 
 println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 println("Simulation Package Loaded")
-println("Michael Wang, 07/21/2020")
+println("Michael Wang, 07/31/2020")
 println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 end

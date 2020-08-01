@@ -18,7 +18,7 @@ function update_particles!(brownian::Brownian; period_x::Float64 = -1.0, period_
         end
 
         dtγ_trans = brownian.dt / particle.γ_trans
-        amplitude = sqrt(2 * particle.D_trans * brownian.dt)
+        @fastmath amplitude = sqrt(2 * particle.D_trans * brownian.dt)
         particle.x = wrap_position(particle.x + dtγ_trans * particle.f_x + amplitude * randn(); period = period_x)
         particle.y = wrap_position(particle.y + dtγ_trans * particle.f_y + amplitude * randn(); period = period_y)
 
@@ -27,7 +27,7 @@ function update_particles!(brownian::Brownian; period_x::Float64 = -1.0, period_
 
         if brownian.rotations
             dtγ_rot = brownian.dt / particle.γ_rot
-            particle.θ += dtγ_rot * particle.t_θ + sqrt(2 * particle.D_rot * brownian.dt) * randn()
+            @fastmath particle.θ += dtγ_rot * particle.t_θ + sqrt(2 * particle.D_rot * brownian.dt) * randn()
 
             particle.t_θ = 0.0
         end

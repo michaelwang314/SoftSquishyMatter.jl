@@ -24,8 +24,10 @@ function update_active_force(active_brownian::ActiveBrownian; particle_orientati
     else
         active_brownian.θ += active_brownian.amplitude * sqrt(dt) * randn()
     end
-    active_brownian.γv_x = active_brownian.γv * cos(active_brownian.θ)
-    active_brownian.γv_y = active_brownian.γv * sin(active_brownian.θ)
+    @fastmath cosine = cos(active_brownian.θ)
+    @fastmath sine = sqrt(1 - cosine^2)
+    active_brownian.γv_x = active_brownian.γv * cosine
+    active_brownian.γv_y = active_brownian.γv * sine
 
     return particle_orientation
 end
@@ -57,14 +59,18 @@ function update_active_force(run_and_tumble::RunAndTumble; particle_orientation:
             particle_orientation = run_and_tumble.θ
         end
 
-        run_and_tumble.γv_x = run_and_tumble.γv * cos(run_and_tumble.θ)
-        run_and_tumble.γv_y = run_and_tumble.γv * sin(run_and_tumble.θ)
+        @fastmath cosine = cos(run_and_tumble.θ)
+        @fastmath sine = sqrt(1 - cosine^2)
+        run_and_tumble.γv_x = run_and_tumble.γv * cosine
+        run_and_tumble.γv_y = run_and_tumble.γv * sine
     else
         if run_and_tumble.align
              run_and_tumble.θ = particle_orientation
 
-             run_and_tumble.γv_x = run_and_tumble.γv * cos(run_and_tumble.θ)
-             run_and_tumble.γv_y = run_and_tumble.γv * sin(run_and_tumble.θ)
+             @fastmath cosine = cos(run_and_tumble.θ)
+             @fastmath sine = sqrt(1 - cosine^2)
+             run_and_tumble.γv_x = run_and_tumble.γv * cosine
+             run_and_tumble.γv_y = run_and_tumble.γv * sine
         end
     end
 

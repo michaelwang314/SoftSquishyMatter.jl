@@ -18,12 +18,12 @@ function hr_min_sec(time::Float64)
 end
 
 """
-    run_simulation(simulation; message_interval, save_to)
+    run_simulation(simulation; message_interval, save_as)
 
 Run the simulation.  `message_interval` (seconds) controls how often a time
-update is printed.  `save_to` is the file to which `simulation` is saved.
+update is printed.  `save_as` is the file to which `simulation` is saved.
 """
-function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_to::String = "")
+function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_as::String = "")
     println("")
     println("   +++++ SIMULATION STARTED +++++")
     println("")
@@ -82,8 +82,8 @@ function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0
         end
     end
 
-    if !isempty(save_to)
-        save_simulation(simulation; file = save_to)
+    if !isempty(save_as)
+        save_simulation(simulation; save_as = save_as)
     end
 
     println("")
@@ -96,16 +96,16 @@ end
 
 Saves `simulation` to `file`.
 """
-function save_simulation(simulation::Simulation; file::String)
-    if !isdir(dirname(file))
-        mkpath(dirname(file))
+function save_simulation(simulation::Simulation; save_as::String)
+    if !isdir(dirname(save_as))
+        mkpath(dirname(save_as))
     end
 
-    open(file, "w") do f
+    open(save_as, "w") do f
         serialize(f, simulation)
     end
     println("")
-    println("Simulation saved to ", file)
+    println("Simulation saved to ", save_as)
     println("")
 end
 
