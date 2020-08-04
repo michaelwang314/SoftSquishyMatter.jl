@@ -1,5 +1,3 @@
-using Serialization
-
 export run_simulation
 export save_simulation
 export load_simulation

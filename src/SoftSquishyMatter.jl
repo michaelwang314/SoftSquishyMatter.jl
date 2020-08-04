@@ -1,5 +1,9 @@
 module SoftSquishyMatter
 
+using Random
+using Serialization
+using Plots
+
 include("definitions.jl")
 include("runsimulation.jl")
 include("activeforces.jl")

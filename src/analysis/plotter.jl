@@ -1,5 +1,3 @@
-using Plots
-
 export plot_frames!
 export animate_frames!
 
@@ -35,7 +33,8 @@ function plot_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 1},
             cx = particle.R * unit_circle.xs .+ x
             cy = particle.R * unit_circle.ys .+ y
 
-            plot!(cx, cy, seriestype = [:shape,], color = colors[particle.ptype], fillalpha = 0.3)
+            color = colors[particle.ptype]
+            plot!(cx, cy, seriestype = [:shape,], color = color, linecolor = color, fillalpha = 0.3)
             if !isnothing(particle.active_force)
                 af_x, af_y = get_active_force(particle.active_force)
                 scale = particle.R / sqrt(af_x^2 + af_y^2)
