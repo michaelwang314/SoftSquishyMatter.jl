@@ -88,12 +88,10 @@ mutable struct Particle
 
     x::Float64 # x position
     y::Float64 # y position
-
     θ::Float64 # orientation
 
     f_x::Float64 # x force
     f_y::Float64 # y force
-
     t_θ::Float64 # torque in z
 
     R::Float64 # particle radius

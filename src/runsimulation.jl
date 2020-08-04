@@ -1,5 +1,3 @@
-using Serialization
-
 export run_simulation
 export save_simulation
 export load_simulation
@@ -18,29 +16,24 @@ function hr_min_sec(time::Float64)
 end
 
 """
-    run_simulation(simulation; message_interval, save_to)
+    run_simulation(simulation; message_interval, save_as)
 
 Run the simulation.  `message_interval` (seconds) controls how often a time
-update is printed.  `save_to` is the file to which `simulation` is saved.
+update is printed.  `save_as` is the file to which `simulation` is saved.
 """
-function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_to::String = "")
+function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_as::String = "")
     println("")
     println("   +++++ SIMULATION STARTED +++++")
     println("")
+
     println("Number of threads available: ", Threads.nthreads())
     println("")
     println("Number of particles: ", length(simulation.particles))
     println("Description: ", simulation.descriptor)
     println("")
 
-    period_x = -1.0
-    if simulation.periodic_in_x
-        period_x = simulation.L_x
-    end
-    period_y = -1.0
-    if simulation.periodic_in_y
-        period_y = simulation.L_y
-    end
+    period_x = simulation.periodic_in_x ? simulation.L_x : -1.0
+    period_y = simulation.periodic_in_y ? simulation.L_y : -1.0
 
     simulation.history = Array{Array{Particle, 1}, 1}()
 
@@ -77,13 +70,13 @@ function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0
                     step + 1, "/", simulation.num_steps + 1, " (", round((step + 1) / simulation.num_steps * 100, digits = 1), "%)", " | ",
                     round(rate, digits = 1), " steps/s", " | ",
                     hr_min_sec((simulation.num_steps - step) / rate))
-            interval_start = time()
             prev_step = step
+            interval_start = time()
         end
     end
 
-    if !isempty(save_to)
-        save_simulation(simulation; file = save_to)
+    if !isempty(save_as)
+        save_simulation(simulation; save_as = save_as)
     end
 
     println("")
@@ -96,16 +89,17 @@ end
 
 Saves `simulation` to `file`.
 """
-function save_simulation(simulation::Simulation; file::String)
-    if !isdir(dirname(file))
-        mkpath(dirname(file))
+function save_simulation(simulation::Simulation; save_as::String)
+    if !isdir(dirname(save_as))
+        mkpath(dirname(save_as))
     end
 
-    open(file, "w") do f
+    open(save_as, "w") do f
         serialize(f, simulation)
     end
+
     println("")
-    println("Simulation saved to ", file)
+    println("Simulation saved to ", save_as)
     println("")
 end
 
@@ -120,8 +114,10 @@ function load_simulation(; file::String)
             deserialize(f)
         end
     end
+
     println("")
     println(file, " loaded")
     println("")
+
     return simulation
 end

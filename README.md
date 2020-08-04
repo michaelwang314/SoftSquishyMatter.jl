@@ -20,7 +20,7 @@ Simulations can be found in [this repository](https://github.com/michaelwang314/
 ## Installation
 To download, open Julia command line, press `]`, and use `add`
 ```
-(v1.4) pkg> add https://github.com/michaelwang314/SoftSquishyMatter.jl
+(v1.5) pkg> add https://github.com/michaelwang314/SoftSquishyMatter.jl
 ```
 or do
 ```
