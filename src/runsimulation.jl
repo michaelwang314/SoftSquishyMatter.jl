@@ -27,20 +27,15 @@ function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0
     println("")
     println("   +++++ SIMULATION STARTED +++++")
     println("")
+
     println("Number of threads available: ", Threads.nthreads())
     println("")
     println("Number of particles: ", length(simulation.particles))
     println("Description: ", simulation.descriptor)
     println("")
 
-    period_x = -1.0
-    if simulation.periodic_in_x
-        period_x = simulation.L_x
-    end
-    period_y = -1.0
-    if simulation.periodic_in_y
-        period_y = simulation.L_y
-    end
+    period_x = simulation.periodic_in_x ? simulation.L_x : -1.0
+    period_y = simulation.periodic_in_y ? simulation.L_y : -1.0
 
     simulation.history = Array{Array{Particle, 1}, 1}()
 
@@ -77,8 +72,8 @@ function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0
                     step + 1, "/", simulation.num_steps + 1, " (", round((step + 1) / simulation.num_steps * 100, digits = 1), "%)", " | ",
                     round(rate, digits = 1), " steps/s", " | ",
                     hr_min_sec((simulation.num_steps - step) / rate))
-            interval_start = time()
             prev_step = step
+            interval_start = time()
         end
     end
 
@@ -104,6 +99,7 @@ function save_simulation(simulation::Simulation; save_as::String)
     open(save_as, "w") do f
         serialize(f, simulation)
     end
+
     println("")
     println("Simulation saved to ", save_as)
     println("")
@@ -120,8 +116,10 @@ function load_simulation(; file::String)
             deserialize(f)
         end
     end
+
     println("")
     println(file, " loaded")
     println("")
+
     return simulation
 end

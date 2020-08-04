@@ -31,15 +31,11 @@ function plot_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 1},
     for f in frame_nums
         plot(size = frame_size, legend = false, axis = false, grid = false, aspect_ratio = 1, xlim = xlim, ylim = ylim)
         for particle in simulation.history[f]
-            x = particle.x
-            y = particle.y
-
+            x, y = particle.x, particle.y
             cx = particle.R * unit_circle.xs .+ x
             cy = particle.R * unit_circle.ys .+ y
 
-            color = colors[particle.ptype]
-            plot!(cx, cy, seriestype = [:shape,], color = color, fillalpha = 0.3)
-
+            plot!(cx, cy, seriestype = [:shape,], color = colors[particle.ptype], fillalpha = 0.3)
             if !isnothing(particle.active_force)
                 af_x, af_y = get_active_force(particle.active_force)
                 scale = particle.R / sqrt(af_x^2 + af_y^2)
@@ -78,6 +74,7 @@ function animate_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 
     println("")
     println("   +++++ GENERATING ANIMATION +++++")
     println("")
+
     θ = LinRange(0, 2 * pi, 20)
     circle = (xs = cos.(θ), ys = sin.(θ))
     animation = @animate for f in frame_nums
@@ -95,6 +92,7 @@ function animate_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 
         println("Frame $f done")
     end
     gif(animation, save_as, fps = fps)
+
     println("")
     println("   +++++ ANIMATION GENERATED +++++")
     println("")

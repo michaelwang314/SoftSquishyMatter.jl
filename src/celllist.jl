@@ -9,7 +9,7 @@ Updates cell list with current positions of select particles stored under
 function update_cell_list!(cell_list::CellList)
     fill!(cell_list.start_pid, -1)
 
-    for (n, particle) in enumerate(cell_list.particles)
+    @inbounds for (n, particle) in enumerate(cell_list.particles)
         i = trunc(Int64, particle.x / cell_list.cell_spacing_x) + 1
         j = trunc(Int64, particle.y / cell_list.cell_spacing_y) + 1
 
