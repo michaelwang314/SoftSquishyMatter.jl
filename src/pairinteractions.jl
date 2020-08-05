@@ -27,6 +27,7 @@ function compute_pair_interaction!(lj::LennardJones; period_x::Float64 = -1.0, p
         x, y = particle.x, particle.y
         i = trunc(Int64, x / lj.cell_list.cell_spacing_x)
         j = trunc(Int64, y / lj.cell_list.cell_spacing_y)
+        f_x, f_y = 0.0, 0.0
         @inbounds for di = -1 : 1, dj = -1 : 1
             idi = mod(i + di, lj.cell_list.num_cells_x) + 1
             jdj = mod(j + dj, lj.cell_list.num_cells_y) + 1
@@ -41,18 +42,18 @@ function compute_pair_interaction!(lj::LennardJones; period_x::Float64 = -1.0, p
                 cutoff² = (lj.cutoff < 0.0 ? LJ_CONST * σ² : lj.cutoff^2)
                 if 0.0 < Δr² < cutoff²
                     coef = lj_coef(lj.ϵ, σ², Δr²)
-                    f_x, f_y = coef * Δx, coef * Δy
-
-                    particle.f_x += f_x
-                    particle.f_y += f_y
+                    f_x += (_f_x = coef * Δx)
+                    f_y += (_f_y = coef * Δy)
                     if lj.use_newton_3rd
-                        neighbor.f_x -= f_x
-                        neighbor.f_y -= f_y
+                        neighbor.f_x -= _f_x
+                        neighbor.f_y -= _f_y
                     end
                 end
                 pid = lj.cell_list.next_pid[pid]
             end
         end
+        particle.f_x += f_x
+        particle.f_y += f_y
     end
 end
 
