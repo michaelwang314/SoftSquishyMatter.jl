@@ -1,4 +1,4 @@
-export run_simulation
+export run_simulation!
 export save_simulation
 export load_simulation
 
@@ -21,7 +21,7 @@ end
 Run the simulation.  `message_interval` (seconds) controls how often a time
 update is printed.  `save_as` is the file to which `simulation` is saved.
 """
-function run_simulation(simulation::Simulation; message_interval::Float64 = 10.0, save_as::String = "")
+function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.0, save_as::String = "")
     println("")
     println("   +++++ SIMULATION STARTED +++++")
     println("")
