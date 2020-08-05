@@ -60,7 +60,7 @@ simulation.save_particles = pgroup_all
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run simulation and save data
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-run_simulation(simulation; save_as = "out/Example_TwoTemperature_data.out")
+run_simulation!(simulation; save_as = "out/Example_TwoTemperature_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # OPTIONAL: Load simulation data and animate the simulation.  Individual frames
