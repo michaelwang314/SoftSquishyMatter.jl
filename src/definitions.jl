@@ -253,8 +253,10 @@ struct ConstantForce <: AbstractExternalForce
 
     particles::Array{Particle, 1}
 
-    function ConstantForce(particles::Array{Particle, 1}; f_x::Float64, f_y::Float64)
-        new(f_x, f_y, particles)
+    multithreaded::Bool
+
+    function ConstantForce(particles::Array{Particle, 1}; f_x::Float64, f_y::Float64, multithreaded::Bool = false)
+        new(f_x, f_y, particles, multithreaded)
     end
 end
 
@@ -273,8 +275,10 @@ struct HarmonicTrap <: AbstractExternalForce
 
     particles::Array{Particle, 1}
 
-    function HarmonicTrap(particles::Array{Particle, 1}; x_center::Float64, y_center::Float64, k_trap::Float64)
-        new(x_center, y_center, k_trap, particles)
+    multithreaded::Bool
+
+    function HarmonicTrap(particles::Array{Particle, 1}; x_center::Float64, y_center::Float64, k_trap::Float64, multithreaded::Bool = false)
+        new(x_center, y_center, k_trap, particles, multithreaded)
     end
 end
 
