@@ -70,7 +70,7 @@ push!(simulation.integrators, brownian)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set the number of steps and which particles to save periodically
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-simulation.num_steps = trunc(Int64, 30 / simulation.dt)
+simulation.num_steps = trunc(Int64, 10 / simulation.dt)
 simulation.save_interval = trunc(Int64, 1 / simulation.dt)
 simulation.save_particles = pgroup_all
 
