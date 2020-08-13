@@ -49,11 +49,11 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
             push!(simulation.history, deepcopy(simulation.save_particles))
         end
 
-        for pair_interaction in simulation.pair_interactions
-            compute_pair_interaction!(pair_interaction; period_x = period_x, period_y = period_y)
+        for interaction in simulation.interactions
+            compute_interactions!(interaction; period_x = period_x, period_y = period_y)
         end
         for external_force in simulation.external_forces
-            compute_external_force!(external_force)
+            compute_external_forces!(external_force)
         end
         for integrator in simulation.integrators
             update_particles!(integrator; period_x = period_x, period_y = period_y)

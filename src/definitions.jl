@@ -166,13 +166,15 @@ struct CellList
 end
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Pair interactions
+# Interactions
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-export AbstractPairInteraction
+export AbstractInteraction
 export LennardJones
 export HarmonicBond
+export HarmonicAngle
+export HarmonicCosineAngle
 
-abstract type AbstractPairInteraction end
+abstract type AbstractInteraction end
 
 """
 Stores properties of a Lennard-Jones interaction
@@ -189,7 +191,7 @@ Stores properties of a Lennard-Jones interaction
 - `use_newton_3rd::Bool = false`: if `true`, use Newton's 3rd law to also compute force on neighbors.  Be CAREFUL with overcounting and race conditions with threads.
 ...
 """
-struct LennardJones <: AbstractPairInteraction
+struct LennardJones <: AbstractInteraction
     ϵ::Float64
     σ::Float64
     cutoff::Float64
@@ -216,7 +218,7 @@ Initialize a harmonic bond between `pairs` of particles with stiffness `k_bond`
 and rest length `l_rest`.  `multithreaded` should only really be used for dimers
 to avoid race conditions.
 """
-struct HarmonicBond <: AbstractPairInteraction
+struct HarmonicBond <: AbstractInteraction
     k_bond::Float64
     l_rest::Float64
 
@@ -229,7 +231,43 @@ struct HarmonicBond <: AbstractPairInteraction
     end
 end
 
-struct DipoleDipole <: AbstractPairInteraction
+"""
+    etc
+
+etc
+"""
+struct HarmonicAngle <: AbstractInteraction
+    k_θ::Float64
+    θ_rest::Float64
+
+    particle_triplets::Array{Tuple{Particle, Particle, Particle}}
+
+    multithreaded::Bool
+
+    function HarmonicAngle(; triplets::Array{Tuple{Particle, Particle, Particle}}, k_θ::Float64, θ_rest::Float64, multithreaded::Bool = false)
+        new(k_θ, θ_rest, triplets, multithreaded)
+    end
+end
+
+"""
+    etc
+
+etc
+"""
+struct HarmonicCosineAngle <: AbstractInteraction
+    k_cosθ::Float64
+    cosθ_rest::Float64
+
+    particle_triplets::Array{Tuple{Particle, Particle, Particle}}
+
+    multithreaded::Bool
+
+    function HarmonicCosineAngle(; triplets::Array{Tuple{Particle, Particle, Particle}}, k_cosθ::Float64, cosθ_rest::Float64, multithreaded::Bool = false)
+        new(k_cosθ, cosθ_rest, triplets, multithreaded)
+    end
+end
+
+struct DipoleDipole <: AbstractInteraction
     # TO BE ADDED
 end
 
@@ -334,7 +372,7 @@ Stores all information needed to run simulation
 - `periodic_in_y::Bool = true`: if `true`, apply periodicity along y
 - `particles::Array{Particle, 1}`: all particles in simulation
 - `cell_lists::Array{CellList, 1}`: all cell lists used
-- `pair_interactions::Array{AbstractPairInteraction, 1}`: all pair interactions used
+- `interactions::Array{AbstractInteraction, 1}`: all interactions used
 - `external_forces::Array{AbstractExternalForce, 1}`: all external forces used
 - `dt::Float64`: timestep
 - `integrators::Array{AbstractIntegrator}`: all integrators used
@@ -355,7 +393,7 @@ mutable struct Simulation
     particles::Array{Particle, 1}
 
     cell_lists::Array{CellList, 1}
-    pair_interactions::Array{AbstractPairInteraction, 1}
+    interactions::Array{AbstractInteraction, 1}
     external_forces::Array{AbstractExternalForce, 1}
 
     dt::Float64
@@ -370,7 +408,7 @@ mutable struct Simulation
         new("No description given...",
             0.0, 0.0, true, true,
             Array{Particle, 1}(),
-            Array{CellList, 1}(), Array{AbstractPairInteraction, 1}(), Array{AbstractExternalForce, 1}(),
+            Array{CellList, 1}(), Array{AbstractInteraction, 1}(), Array{AbstractExternalForce, 1}(),
             0.0, Array{AbstractIntegrator, 1}(),
             0, 0, Array{Particle, 1}(), Array{Array{Particle, 1}, 1}())
     end
