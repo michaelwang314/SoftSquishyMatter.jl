@@ -13,7 +13,7 @@ include("celllist.jl")
 include("pairinteractions.jl")
 include("externalforces.jl")
 
-include("analysis/plotter.jl")
+include("analysis/visualize.jl")
 
 println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 println("Simulation Package Loaded")
