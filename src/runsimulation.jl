@@ -87,7 +87,7 @@ function save_simulation(simulation::Simulation; save_as::String)
     open(save_as, "w") do f
         serialize(f, simulation)
     end
-    print_message("Simulation saved to $save_as")
+    println("\nSimulation saved to $save_as\n")
 end
 
 """
@@ -101,6 +101,6 @@ function load_simulation(; file::String)
             deserialize(f)
         end
     end
-    print_message("$file loaded")
+    println("\n$file loaded\n")
     return simulation
 end
