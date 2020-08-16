@@ -363,7 +363,7 @@ mutable struct Simulation
 
     num_steps::Int64
     save_interval::Int64
-    save_particles::Array{Particle, 1}
+    particles_to_save::Array{Particle, 1}
     history::Array{Array{Particle, 1}}
 
     function Simulation()
@@ -382,6 +382,7 @@ end
 export use_threads
 export wrap_displacement
 export wrap_positions
+export print_message
 
 """
     @use_threads multithreaded ...
@@ -425,4 +426,13 @@ condition is applied.
         return mod(position, period)
     end
     return position
+end
+
+"""
+
+"""
+@inline function print_message(message::String)
+    println("")
+    println("   +++++ ", message, " +++++  ")
+    println("")
 end

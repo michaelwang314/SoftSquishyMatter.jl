@@ -2,6 +2,7 @@ module SoftSquishyMatter
 
 using Random
 using Serialization
+using DataStructures
 using Plots
 
 include("definitions.jl")
@@ -13,11 +14,11 @@ include("celllist.jl")
 include("pairinteractions.jl")
 include("externalforces.jl")
 
-include("analysis/plotter.jl")
+include("analysis/visualize.jl")
 
 println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-println("Simulation Package Loaded")
-println("Michael Wang, 07/31/2020")
+println("SoftSquishyMatter Loaded!")
+println("Michael Wang")
 println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 end

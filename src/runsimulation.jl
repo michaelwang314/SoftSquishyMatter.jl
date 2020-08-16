@@ -22,12 +22,8 @@ Run the simulation.  `message_interval` (seconds) controls how often a time
 update is printed.  `save_as` is the file to which `simulation` is saved.
 """
 function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.0, save_as::String = "")
-    println("")
-    println("   +++++ SIMULATION STARTED +++++")
-    println("")
-
+    print_message("SIMULATION STARTED")
     println("Number of threads available: ", Threads.nthreads())
-    println("")
     println("Number of particles: ", length(simulation.particles))
     println("Description: ", simulation.descriptor)
     println("")
@@ -37,16 +33,13 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
 
     simulation.history = Array{Array{Particle, 1}, 1}()
 
-    println("")
-    println("   +++++ PROGRESS +++++")
-    println("")
-
+    print_message("SIMULATION PROGRESS")
     prev_step = 0
     time_elapsed = 0.0
     interval_start = time()
     @time for step = 0 : simulation.num_steps
         if step % simulation.save_interval == 0
-            push!(simulation.history, deepcopy(simulation.save_particles))
+            push!(simulation.history, deepcopy(simulation.particles_to_save))
         end
 
         for pair_interaction in simulation.pair_interactions
@@ -78,10 +71,7 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
     if !isempty(save_as)
         save_simulation(simulation; save_as = save_as)
     end
-
-    println("")
-    println("   +++++ SIMULATION COMPLETE +++++")
-    println("")
+    print_message("SIMULATION COMPLETED")
 end
 
 """
@@ -97,10 +87,7 @@ function save_simulation(simulation::Simulation; save_as::String)
     open(save_as, "w") do f
         serialize(f, simulation)
     end
-
-    println("")
-    println("Simulation saved to ", save_as)
-    println("")
+    print_message("Simulation saved to $save_as")
 end
 
 """
@@ -114,10 +101,6 @@ function load_simulation(; file::String)
             deserialize(f)
         end
     end
-
-    println("")
-    println(file, " loaded")
-    println("")
-
+    print_message("$file loaded")
     return simulation
 end
