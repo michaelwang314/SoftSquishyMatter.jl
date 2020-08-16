@@ -1,151 +1,88 @@
-export plot_frames!
-export animate_frames!
+export visualize!
 
-function visualize!(simulation::Simulation; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
+"""
+    visualize!(simulation; save_as, fps, frame_nums, frame_size, xlim, ylim, particle_colors, multithreaded)
+
+# Arguments
+- `simulation::Simulation`: simulation to visualize
+- `save_as::Tuple{Symbol, String}` = (:gif, "temp.gif"):
+- `fps::Int64 = 10`: frames per second if creating an animation
+- `frame_nums::Union{Array{Int64, 1}, Symbol} = :all`: frame numbers to use.
+- `frame_size::Tuple{Int64, Int64} = (600, 600)`: size of frame in pixels
+- `xlim::Union{Array{Float64, 1}, Symbol} = :all`: frame limits along x-axis
+- `ylim::Union{Array{Float64, 1}, Symbol} = :all`: frame limits along y-axis
+- `particle_colors::Union{DefaultDict{Symbol, String, String}, Dict{Symbol, String}} = DefaultDict{Symbol, String}("black")`: particle colors
+- `multithreaded::Bool = false`: use threads to update frames
+"""
+function visualize!(simulation::Simulation; save_as::Tuple{Symbol, String} = (:gif, "temp.gif"),
+                                            fps::Int64 = 10,
+                                            frame_nums::Union{Array{Int64, 1}, Symbol} = :all,
                                             frame_size::Tuple{Int64, Int64} = (600, 600),
-                                            xlim::Union{Array{Float64, 1}, Nothing} = nothing, ylim::Union{Array{Float64, 1}, Nothing} = nothing,
-                                            colors::Dict{Symbol, String} = Dict(:particle => "black"))
-    
-end
-
-
-"""
-    plot_frames!(simulation; frame_nums, frame_size, xlim, ylim, colors, save_to)
-
-Plots each frame of `simulation.history`.
-"""
-function plot_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
-                                              frame_size::Tuple{Int64, Int64} = (600, 600),
-                                              xlim::Union{Array{Float64, 1}, Nothing} = nothing, ylim::Union{Array{Float64, 1}, Nothing} = nothing,
-                                              colors::Dict{Symbol, String} = Dict(:particle => "black"),
-                                              save_to::String = "frames/")
-    if !isdir(dirname(save_to))
-        mkpath(dirname(save_to))
+                                            xlim::Union{Array{Float64, 1}, Symbol} = :all, ylim::Union{Array{Float64, 1}, Symbol} = :all,
+                                            particle_colors::Union{DefaultDict{Symbol, String, String}, Dict{Symbol, String}} = DefaultDict{Symbol, String}("black"),
+                                            multithreaded::Bool = false)
+    save_type, save_str = save_as
+    if !isdir(dirname(save_str))
+        mkpath(dirname(save_str))
     end
 
-    frame_nums = isnothing(frame_nums) ? [f for f = 1 : length(simulation.history)] : frame_nums
-    xlim = isnothing(xlim) ? [0.0, simulation.L_x] : xlim
-    ylim = isnothing(ylim) ? [0.0, simulation.L_y] : ylim
+    if frame_nums == :all
+        frame_nums = [f for f = 1 : length(simulation.history)]
+    elseif frame_nums == :start
+        frame_nums = [1]
+    elseif frame_nums == :end
+        frame_nums = [length(simulation.history)]
+    elseif frame_nums == :startend
+        frame_nums = [1, length(simulation.history)]
+    end
 
-    θ = LinRange(0, 2 * pi, 20)
-    unit_circle = (xs = cos.(θ), ys = sin.(θ))
+    if xlim == :all
+        xlim = [0.0, simulation.L_x]
+    end
+    if ylim == :all
+        ylim = [0.0, simulation.L_y]
+    end
 
-    println("")
-    println("   +++++ GENERATING IMAGES +++++")
-    println("")
+    if save_type == :gif
+        print_message("GENERATING GIF")
+        animation = Animation()
+    elseif save_type == :images
+        print_message("GENERATING IMAGES")
+    end
 
-    for f in frame_nums
-        plot(size = frame_size, legend = false, axis = false, grid = false, aspect_ratio = 1, xlim = xlim, ylim = ylim)
-        for particle in simulation.history[f]
-            x, y = particle.x, particle.y
-            cx = particle.R * unit_circle.xs .+ x
-            cy = particle.R * unit_circle.ys .+ y
-
-            color = colors[particle.ptype]
-            plot!(cx, cy, seriestype = [:shape,], color = color, linecolor = color, fillalpha = 0.3)
-            if !isnothing(particle.active_force)
-                af_x, af_y = get_active_force(particle.active_force)
-                scale = particle.R / sqrt(af_x^2 + af_y^2)
-                plot!([x, x + scale * af_x], [y, y + scale * af_y], color = "red")
+    N_particles = length(simulation.particles_to_save)
+    scene = plot(size = frame_size, legend = false, axis = false, grid = false, aspect_ratio = 1, xlim = xlim, ylim = ylim)
+    for (f, frame_num) = enumerate(frame_nums)
+        if f == 1
+            θ = LinRange(0.0, 2 * pi, 20)
+            unit_circle = (xs = cos.(θ), ys = sin.(θ))
+            for particle in simulation.history[1]
+                cxs, cys = particle.R .* unit_circle.xs .+ particle.x, particle.R .* unit_circle.ys .+ particle.y
+                color = particle_colors[particle.ptype]
+                plot!(cxs, cys, seriestype = [:shape,], color = color, linecolor = color, fillalpha = 0.3)
             end
-        end
-        save_as = string(save_to, "Frame $f.png")
-        savefig(save_as)
-        println(save_as, " done")
-    end
-
-    println("")
-    println("   +++++ IMAGES GENERATED +++++")
-    println("")
-end
-
-"""
-    animate_frames!(simulation; frame_num, frame_size, xlim, ylim, colors, fps, save_as)
-
-Generates a gif of the simulation.
-"""
-function animate_frames!(simulation::Simulation; frame_nums::Union{Array{Int64, 1}, Nothing} = nothing,
-                                                 frame_size::Tuple{Int64, Int64} = (600, 600),
-                                                 xlim::Union{Array{Float64, 1}, Nothing} = nothing, ylim::Union{Array{Float64, 1}, Nothing} = nothing,
-                                                 colors::Dict{Symbol, String} = Dict(:particle => "black"),
-                                                 fps::Int64 = 10,
-                                                 save_as::String = "frames/simulation.gif")
-    if !isdir(dirname(save_as))
-        mkpath(dirname(save_as))
-    end
-
-    frame_nums = isnothing(frame_nums) ? [f for f = 1 : length(simulation.history)] : frame_nums
-    xlim = isnothing(xlim) ? [0.0, simulation.L_x] : xlim
-    ylim = isnothing(ylim) ? [0.0, simulation.L_y] : ylim
-
-    println("")
-    println("   +++++ GENERATING ANIMATION +++++")
-    println("")
-
-    θ = LinRange(0, 2 * pi, 20)
-    circle = (xs = cos.(θ), ys = sin.(θ))
-    animation = @animate for f in frame_nums
-        new_frame = true
-        for particle in simulation.history[f]
-            draw = new_frame ? drawparticle : drawparticle!
-            draw(particle, circle, colors[particle.ptype], frame_size, xlim, ylim)
-            new_frame = false
-
-            if !isnothing(particle.active_force)
-                drawactiveforce!(particle, frame_size, xlim, ylim)
+        else
+            prev_frame_num = frame_nums[f - 1]
+            @use_threads multithreaded for n = 1 : N_particles
+                prev_particle, particle = simulation.history[prev_frame_num][n], simulation.history[frame_num][n]
+                Δx, Δy = particle.x - prev_particle.x, particle.y - prev_particle.y
+                scene.series_list[n][:x] .+= Δx
+                scene.series_list[n][:y] .+= Δy
             end
         end
 
-        println("Frame $f done")
+        if save_type == :gif
+            frame(animation)
+        elseif save_type == :images
+            savefig(string(save_str, "Frame ", frame_num, ".png"))
+        end
+        println("Frame ", frame_num, " done")
     end
-    gif(animation, save_as, fps = fps)
 
-    println("")
-    println("   +++++ ANIMATION GENERATED +++++")
-    println("")
-end
-
-@userplot DrawParticle
-@recipe function f(info::DrawParticle)
-    particle, circle, color, size, xlim, ylim = info.args
-    cx = particle.R * circle.xs .+ particle.x
-    cy = particle.R * circle.ys .+ particle.y
-
-    linecolor --> color
-    linealpha --> 1
-    seriestype := :shape
-    seriescolor --> color
-    seriesalpha --> 0.3
-
-    size --> size
-    aspect_ratio --> 1
-    label --> false
-    axis --> false
-    grid --> false
-    xlims --> xlim
-    ylims --> ylim
-
-    return cx, cy
-end
-
-@userplot DrawActiveForce
-@recipe function f(info::DrawActiveForce)
-    particle, size, xlim, ylim = info.args
-    af_x, af_y = get_active_force(particle.active_force)
-    scale = particle.R / sqrt(af_x^2 + af_y^2)
-    lx = [particle.x, particle.x + scale * af_x]
-    ly = [particle.y, particle.y + scale * af_y]
-
-    linecolor --> "red"
-    linealpha --> 1
-
-    size --> size
-    aspect_ratio --> 1
-    label --> false
-    axis --> false
-    grid --> false
-    xlims --> xlim
-    ylims --> ylim
-
-    return lx, ly
+    if save_type == :gif
+        gif(animation, save_str, fps = fps)
+        print_message("GIF GENERATED")
+    elseif save_type == :images
+        print_message("IMAGES GENERATED")
+    end
 end
