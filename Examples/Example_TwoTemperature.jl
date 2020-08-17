@@ -41,7 +41,7 @@ pgroup_all = simulation.particles
 cell_list = CellList(particles = pgroup_all, L_x = simulation.L_x, L_y = simulation.L_y, cutoff = 2^(1.0 / 6.0) * 2 * R)
 lj = LennardJones(particles = pgroup_all, cell_list = cell_list, ϵ = D_trans_hot * γ_trans_hot, multithreaded = true)
 push!(simulation.cell_lists, cell_list)
-push!(simulation.pair_interactions, lj)
+push!(simulation.interactions, lj)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Initialize Brownian integrator for dynamics

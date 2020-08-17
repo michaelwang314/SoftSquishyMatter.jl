@@ -52,12 +52,12 @@ lj_ss = LennardJones(particles = pgroup_small, cell_list = cell_list_ss, ϵ = 1.
 lj_sl = LennardJones(particles = pgroup_large, cell_list = cell_list_sl, ϵ = 1.38e-23 * 300, multithreaded = false, use_newton_3rd = true)
 lj_ll = LennardJones(particles = pgroup_large, cell_list = cell_list_ll, ϵ = 1.38e-23 * 300, multithreaded = false)
 append!(simulation.cell_lists, [cell_list_ss, cell_list_sl, cell_list_ll])
-append!(simulation.pair_interactions, [lj_ss, lj_sl, lj_ll])
+append!(simulation.interactions, [lj_ss, lj_sl, lj_ll])
 # this works too, but is slower since small particles can use a smaller cutoff
 #=cell_list = CellList(particles = pgroup_all, L_x = simulation.L_x, L_y = simulation.L_y, cutoff = 2^(1.0 / 6.0) * 2 * R_large)
 lj = LennardJones(particles = pgroup_all, cell_list = cell_list, ϵ = 1.38e-23 * 300, multithreaded = true)
 push!(simulation.cell_lists, cell_list)
-push!(simulation.pair_interactions, lj)=#
+push!(simulation.interactions, lj)=#
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Initialize Brownian integrator for overdamped dynamics

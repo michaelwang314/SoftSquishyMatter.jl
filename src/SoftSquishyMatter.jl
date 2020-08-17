@@ -11,7 +11,7 @@ include("activeforces.jl")
 include("particle.jl")
 include("integrators.jl")
 include("celllist.jl")
-include("pairinteractions.jl")
+include("interactions.jl")
 include("externalforces.jl")
 
 include("analysis/visualize.jl")
