@@ -72,7 +72,7 @@ push!(simulation.integrators, brownian)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation.num_steps = trunc(Int64, 10 / simulation.dt)
 simulation.save_interval = trunc(Int64, 1 / simulation.dt)
-simulation.save_particles = pgroup_all
+simulation.particles_to_save = pgroup_all
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run simulation and save data
@@ -80,8 +80,7 @@ simulation.save_particles = pgroup_all
 run_simulation!(simulation, save_as = "out/Example_PolyDispersed_data.out")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OPTIONAL: Load simulation data and animate the simulation.  Individual frames
-# can be saved with plot_frames!
+# OPTIONAL: Load simulation data and animate the simulation.
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 simulation = load_simulation(file = "out/Example_PolyDispersed_data.out")
-animate_frames!(simulation; colors = Dict(:small => "black", :large => "blue"), fps = 1, save_as = "frames/Example_PolyDispersed.gif")
+visualize!(simulation; save_as = (:gif, "frames/Example_PolyDispersed.gif"), fps = 1, particle_colors = Dict(:small => "black", :large => "blue"))
