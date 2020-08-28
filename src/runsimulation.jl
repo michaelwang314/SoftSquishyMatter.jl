@@ -34,7 +34,7 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
     period_x = simulation.periodic_in_x ? simulation.L_x : -1.0
     period_y = simulation.periodic_in_y ? simulation.L_y : -1.0
 
-    simulation.history = Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{Tuple{Particle, Particle}, 1}}}, 1}()
+    simulation.history = Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}}, 1}()
 
     print_message("SIMULATION PROGRESS")
     prev_step = 0

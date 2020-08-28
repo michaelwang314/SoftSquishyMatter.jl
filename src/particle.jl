@@ -152,7 +152,7 @@ end
 Returns pairs of particles that are within `maximum_distance` of eachother.
 """
 function nearest_neighbor_pairs(particles::Array{Particle, 1}; maximum_distance::Float64 = 0.0, period_x::Float64 = -1.0, period_y::Float64 = -1.0)
-    pairs = Array{Tuple{Particle, Particle}, 1}()
+    pairs = Array{NTuple{2, Particle}, 1}()
 
     N = length(particles)
     for i = 1 : N, j = i + 1 : N

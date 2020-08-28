@@ -124,12 +124,12 @@ end
 """
 struct Molecule
     particles::Array{Particle, 1}
-    pairs::Array{Tuple{Particle, Particle}, 1}
-    triplets::Array{Tuple{Particle, Particle, Particle}, 1}
+    pairs::Array{NTuple{2, Particle}, 1}
+    triplets::Array{NTuple{3, Particle}, 1}
 
     function Molecule(; particles::Array{Particle, 1} = Array{Particle, 1}(), 
-                        pairs::Array{Tuple{Particle, Particle}, 1} = Array{Tuple{Particle, Particle}, 1}(), 
-                        triplets::Array{Tuple{Particle, Particle, Particle}, 1} = Array{Tuple{Particle, Particle, Particle}, 1}())
+                        pairs::Array{NTuple{2, Particle}, 1} = Array{NTuple{2, Particle}, 1}(), 
+                        triplets::Array{NTuple{3, Particle}, 1} = Array{NTuple{3, Particle}, 1}())
         new(particles, pairs, triplets)
     end
 end
@@ -239,11 +239,11 @@ struct HarmonicBond <: AbstractInteraction
     k_bond::Float64
     l_rest::Float64
 
-    particle_pairs::Array{Tuple{Particle, Particle}}
+    particle_pairs::Array{NTuple{2, Particle}}
 
     multithreaded::Bool
 
-    function HarmonicBond(; pairs::Array{Tuple{Particle, Particle}}, k_bond::Float64, l_rest::Float64 = 0.0, multithreaded::Bool = false)
+    function HarmonicBond(; pairs::Array{NTuple{2, Particle}}, k_bond::Float64, l_rest::Float64 = 0.0, multithreaded::Bool = false)
         new(k_bond, l_rest, pairs, multithreaded)
     end
 end
@@ -257,11 +257,11 @@ struct HarmonicAngle <: AbstractInteraction
     k_θ::Float64
     θ_rest::Float64
 
-    particle_triplets::Array{Tuple{Particle, Particle, Particle}}
+    particle_triplets::Array{NTuple{3, Particle}}
 
     multithreaded::Bool
 
-    function HarmonicAngle(; triplets::Array{Tuple{Particle, Particle, Particle}}, k_θ::Float64, θ_rest::Float64, multithreaded::Bool = false)
+    function HarmonicAngle(; triplets::Array{NTuple{3, Particle}}, k_θ::Float64, θ_rest::Float64, multithreaded::Bool = false)
         new(k_θ, θ_rest, triplets, multithreaded)
     end
 end
@@ -290,11 +290,11 @@ struct HarmonicCosineAngle <: AbstractInteraction
     k_cosθ::Float64
     cosθ_rest::Float64
 
-    particle_triplets::Array{Tuple{Particle, Particle, Particle}}
+    particle_triplets::Array{NTuple{3, Particle}, 1}
 
     multithreaded::Bool
 
-    function HarmonicCosineAngle(; triplets::Array{Tuple{Particle, Particle, Particle}}, k_cosθ::Float64, cosθ_rest::Float64, multithreaded::Bool = false)
+    function HarmonicCosineAngle(; triplets::Array{NTuple{3, Particle}, 1}, k_cosθ::Float64, cosθ_rest::Float64, multithreaded::Bool = false)
         new(k_cosθ, cosθ_rest, triplets, multithreaded)
     end
 end
@@ -419,7 +419,8 @@ mutable struct Simulation
     periodic_in_y::Bool
 
     particles::Array{Particle, 1}
-    bonds::Array{Tuple{Particle, Particle}, 1}
+    bonds::Array{NTuple{2, Particle}, 1}
+    angles::Array{NTuple{3, Particle}, 1}
 
     cell_lists::Array{CellList, 1}
     interactions::Array{AbstractInteraction, 1}
@@ -430,13 +431,13 @@ mutable struct Simulation
     num_steps::Int64
 
     save_interval::Int64
-    things_to_save::NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{Tuple{Particle, Particle}, 1}}}
-    history::Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{Tuple{Particle, Particle}, 1}}}, 1}
+    things_to_save::NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}}
+    history::Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}}, 1}
 
     function Simulation()
         new("No description given...",
             0.0, 0.0, true, true,
-            [], [],
+            [], [], [],
             [], [], [],
             0.0, [], 0, 
             0, (particles = [], bonds = []), [])

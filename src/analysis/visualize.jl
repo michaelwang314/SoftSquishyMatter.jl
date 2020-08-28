@@ -17,7 +17,7 @@ export visualize!
 function visualize!(simulation::Simulation; save_as::Tuple{Symbol, String} = (:gif, "temp.gif"),
                                             fps::Int64 = 10,
                                             frame_nums::Union{Array{Int64, 1}, Symbol} = :all,
-                                            frame_size::Tuple{Int64, Int64} = (600, 600),
+                                            frame_size::NTuple{2, Int64} = (600, 600),
                                             xlim::Union{Array{Float64, 1}, Symbol} = :all, ylim::Union{Array{Float64, 1}, Symbol} = :all,
                                             particle_colors::Union{DefaultDict{Symbol, String, String}, Dict{Symbol, String}} = DefaultDict{Symbol, String}("black"),
                                             multithreaded::Bool = false)
