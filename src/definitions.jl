@@ -117,6 +117,23 @@ mutable struct Particle
     end
 end
 
+"""
+    Molecule(particles, pairs, triplets)
+
+...
+"""
+struct Molecule
+    particles::Array{Particle, 1}
+    pairs::Array{Tuple{Particle, Particle}, 1}
+    triplets::Array{Tuple{Particle, Particle, Particle}, 1}
+
+    function Molecule(; particles::Array{Particle, 1} = Array{Particle, 1}(), 
+                        pairs::Array{Tuple{Particle, Particle}, 1} = Array{Tuple{Particle, Particle}, 1}(), 
+                        triplets::Array{Tuple{Particle, Particle, Particle}, 1} = Array{Tuple{Particle, Particle, Particle}, 1}())
+        new(particles, pairs, triplets)
+    end
+end
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Cell list
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,7 +188,6 @@ end
 export AbstractInteraction
 export LennardJones
 export HarmonicBond
-export HarmonicAngle
 export HarmonicCosineAngle
 
 abstract type AbstractInteraction end
@@ -250,7 +266,16 @@ struct HarmonicAngle <: AbstractInteraction
 end
 
 """
-    etc
+    ...
+    
+...
+"""
+struct CosineAngle <: AbstractInteraction
+
+end
+
+"""
+    HarmonicCosineAngle(triplets, k_cosθ, cosθ_rest, multithreaded)
 
 etc
 """
