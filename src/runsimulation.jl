@@ -7,12 +7,14 @@ export load_simulation
 
 Converts `time` (seconds) to 00:00:00 (hr:min:sec) format.
 """
-function hr_min_sec(time::Float64)
+@inline function hr_min_sec(time::Float64)
     hours = trunc(Int64, time / 3600.0)
     minutes = trunc(Int64, mod(time, 3600.0) / 60.0)
     seconds = trunc(Int64, mod(time, 60.0))
 
-    return string(hours < 10 ? "0$hours" : "$hours", ":", minutes < 10 ? "0$minutes" : "$minutes", ":", seconds < 10 ? "0$seconds" : "$seconds")
+    return string(hours < 10 ? "0" : "", hours, 
+                  minutes < 10 ? ":0" : ":", minutes, 
+                  seconds < 10 ? ":0" : ":", seconds)
 end
 
 """
@@ -25,13 +27,14 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
     print_message("SIMULATION STARTED")
     println("Number of threads available: ", Threads.nthreads())
     println("Number of particles: ", length(simulation.particles))
+    println("Number of bonds: ", length(simulation.bonds))
     println("Description: ", simulation.descriptor)
     println("")
 
     period_x = simulation.periodic_in_x ? simulation.L_x : -1.0
     period_y = simulation.periodic_in_y ? simulation.L_y : -1.0
 
-    simulation.history = Array{Array{Particle, 1}, 1}()
+    simulation.history = Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{Tuple{Particle, Particle}, 1}}}, 1}()
 
     print_message("SIMULATION PROGRESS")
     prev_step = 0
@@ -39,7 +42,7 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
     interval_start = time()
     @time for step = 0 : simulation.num_steps
         if step % simulation.save_interval == 0
-            push!(simulation.history, deepcopy(simulation.particles_to_save))
+            push!(simulation.history, deepcopy(simulation.things_to_save))
         end
 
         for interaction in simulation.interactions
@@ -75,9 +78,9 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
 end
 
 """
-    save_simulation(simulation; file)
+    save_simulation(simulation; save_as)
 
-Saves `simulation` to `file`.
+Saves `simulation` to `save_as`.
 """
 function save_simulation(simulation::Simulation; save_as::String)
     if !isdir(dirname(save_as))

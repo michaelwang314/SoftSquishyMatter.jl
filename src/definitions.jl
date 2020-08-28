@@ -419,6 +419,7 @@ mutable struct Simulation
     periodic_in_y::Bool
 
     particles::Array{Particle, 1}
+    bonds::Array{Tuple{Particle, Particle}, 1}
 
     cell_lists::Array{CellList, 1}
     interactions::Array{AbstractInteraction, 1}
@@ -426,19 +427,19 @@ mutable struct Simulation
 
     dt::Float64
     integrators::Array{AbstractIntegrator, 1}
-
     num_steps::Int64
+
     save_interval::Int64
-    particles_to_save::Array{Particle, 1}
-    history::Array{Array{Particle, 1}}
+    things_to_save::NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{Tuple{Particle, Particle}, 1}}}
+    history::Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{Tuple{Particle, Particle}, 1}}}, 1}
 
     function Simulation()
         new("No description given...",
             0.0, 0.0, true, true,
-            Array{Particle, 1}(),
-            Array{CellList, 1}(), Array{AbstractInteraction, 1}(), Array{AbstractExternalForce, 1}(),
-            0.0, Array{AbstractIntegrator, 1}(),
-            0, 0, Array{Particle, 1}(), Array{Array{Particle, 1}, 1}())
+            [], [],
+            [], [], [],
+            0.0, [], 0, 
+            0, (particles = [], bonds = []), [])
     end
 end
 
