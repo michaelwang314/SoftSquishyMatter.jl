@@ -85,19 +85,37 @@ function compute_interactions!(hbond::HarmonicBond; period_x::Float64 = -1.0, pe
 end
 
 """
-    compute_interations!(hθ; period_x, period_y)
-"""
-function compute_interactions!(hθ::HarmonicAngle; period_x::Float64 = -1.0, period_y::Float64 = -1.0)
-    @use_threads hθ.multithreaded for (particle_left, particle_mid, particle_right) in hθ.particle_triplets
-        0
-    end
-end
-
-"""
     compute_interations!(hcosθ; period_x, period_y)
 """
 function compute_interactions!(hcosθ::HarmonicCosineAngle; period_x::Float64 = -1.0, period_y::Float64 = -1.0)
     @use_threads hcosθ.multithreaded for (particle_left, particle_mid, particle_right) in hcosθ.particle_triplets
-        0
+        x_l, y_l = particle_left.x, particle_left.y
+        x_m, y_m = particle_mid.x, particle_mid.y
+        x_r, y_r = particle_right.x, particle_right.y
+        Δx_lm = wrap_displacement(x_l - x_m; period = period_x)
+        Δy_lm = wrap_displacement(y_l - y_m; period = period_y)
+        Δr_lm² = Δx_lm^2 + Δy_lm^2
+        Δx_rm = wrap_displacement(x_r - x_m; period = period_x)
+        Δy_rm = wrap_displacement(y_r - y_m; period = period_y)
+        Δr_rm² = Δx_rm^2 + Δy_rm^2
+
+        norm = 1.0 / sqrt(Δr_lm² * Δr_rm²)
+        cosθ = (Δx_lm * Δx_rm + Δy_lm * Δy_rm) * norm
+        sinθ = (Δx_lm * Δy_rm - Δx_rm * Δy_lm) * norm
+        coef = -hcosθ.k_cosθ * (cosθ - hcosθ.cosθ_rest) * sinθ
+
+        # particle_left force
+        coef_l = coef / Δr_lm²
+        particle_left.f_x += (f_x_l = -coef_l * Δy_lm)
+        particle_left.f_y += (f_y_l = coef_l * Δx_lm)
+
+        # particle_right force
+        coef_r = coef / Δr_rm²
+        particle_right.f_x += (f_x_r = coef_r * Δy_rm)
+        particle_right.f_y += (f_y_r = -coef_r * Δx_rm)
+
+        # particle_mid force
+        particle_mid.f_x -= f_x_l + f_x_r
+        particle_mid.f_y -= f_y_l + f_y_r
     end
 end

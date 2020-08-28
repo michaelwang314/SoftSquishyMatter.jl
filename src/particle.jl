@@ -2,8 +2,9 @@ export group_by_type
 export rectangular_lattice
 export triangular_lattice
 export wedge
-export flat_edge
+export line
 export remove_overlaps!
+export remove_shape!
 export nearest_neighbor_pairs
 
 """
@@ -58,13 +59,13 @@ function triangular_lattice(; s::Float64, M_x::Int64, M_y::Int64)
 end
 
 """
-    flat_edge(; from, to, spacing)
+    line(; from, to, spacing)
 
 Generates a line of points from point `from` to point `to` with approximate
 spacing `spacing`.  Note that the spacing is automatically adjusted slightly so
 that points are equally spaced and include the start and end points.
 """
-function flat_edge(; from::Array{Float64, 1}, to::Array{Float64, 1}, spacing::Float64)
+function line(; from::Array{Float64, 1}, to::Array{Float64, 1}, spacing::Float64)
     edge_length = sqrt((to[1] - from[1])^2 + (to[2] - from[2])^2)
     M = ceil(Int64, edge_length / spacing)
 
@@ -112,6 +113,34 @@ function remove_overlaps!(positions::Array{Array{Float64, 1}, 1}; fixed_position
                 push!(indices_to_remove, n)
                 break
             end
+        end
+    end
+    deleteat!(positions, indices_to_remove)
+end
+
+"""
+    remove_shape!(positions; shape, in_or_out)
+
+Remove positions that are either inside (:in) or outside (:out) of a 
+parametric shape.
+"""
+function remove_shape!(positions::Array{Array{Float64, 1}, 1}; shape::Array{Array{Float64, 1}, 1}, in_or_out::Symbol)
+    indices_to_remove = Array{Int64, 1}()
+    N_shape = length(shape)
+    for (n, (x, y)) in enumerate(positions)
+        θ = 0.0
+        for p = 1 : N_shape
+            next_p = p % N_shape + 1
+            Δx_1, Δy_1 = shape[p][1] - x, shape[p][2] - y
+            Δx_2, Δy_2 = shape[next_p][1] - x, shape[next_p][2] - y
+            cross = (Δx_1 * Δy_2 - Δx_2 * Δy_1) / sqrt((Δx_1^2 + Δy_1^2) * (Δx_2^2 + Δy_2^2))
+
+            θ += asin(cross)
+        end
+
+        winding_number = round(θ / (2 * pi))
+        if (winding_number == 0.0 && in_or_out == :out) || (winding_number != 0.0 && in_or_out == :in)
+            push!(indices_to_remove, n)
         end
     end
     deleteat!(positions, indices_to_remove)
