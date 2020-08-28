@@ -86,6 +86,10 @@ end
 
 """
     compute_interations!(hcosθ; period_x, period_y)
+
+Compute `HarmonicCosingAngle` forces for triplets of particles stored in
+`hcosθ.particle_triplets`.  Apply periodic boundary conditions if 
+`period_x > 0.0` or `period_y > 0.0`.
 """
 function compute_interactions!(hcosθ::HarmonicCosineAngle; period_x::Float64 = -1.0, period_y::Float64 = -1.0)
     @use_threads hcosθ.multithreaded for (particle_left, particle_mid, particle_right) in hcosθ.particle_triplets

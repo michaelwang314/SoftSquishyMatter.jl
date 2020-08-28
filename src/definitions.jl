@@ -231,8 +231,9 @@ Stores properties of a harmonic bond between pair of particles
     HarmonicBond(; pairs, k_bond, l_rest, multithreaded)
 
 Initialize a harmonic bond between `pairs` of particles with stiffness `k_bond`
-and rest length `l_rest`.  `multithreaded` should only really be used for dimers
-to avoid race conditions.
+and rest length `l_rest`.  For now `multithreaded` should only really be used 
+for dimers to avoid race conditions.  This will be changed with the
+introduction of Molecules.
 """
 struct HarmonicBond <: AbstractInteraction
     k_bond::Float64
@@ -275,9 +276,15 @@ struct CosineAngle <: AbstractInteraction
 end
 
 """
+Stores properties of bending force for triplets of particles
+
     HarmonicCosineAngle(triplets, k_cosθ, cosθ_rest, multithreaded)
 
-etc
+Initialize a bending force for `triplets` of particles with 
+with bending stiffness `k_cosθ` with rest cosine angle 
+`cosθ_rest`.  For now `multithreaded` should only really be used 
+for trimers to avoid race conditions.  This will be changed with 
+the introduction of Molecules.
 """
 struct HarmonicCosineAngle <: AbstractInteraction
     k_cosθ::Float64
@@ -290,10 +297,6 @@ struct HarmonicCosineAngle <: AbstractInteraction
     function HarmonicCosineAngle(; triplets::Array{Tuple{Particle, Particle, Particle}}, k_cosθ::Float64, cosθ_rest::Float64, multithreaded::Bool = false)
         new(k_cosθ, cosθ_rest, triplets, multithreaded)
     end
-end
-
-struct DipoleDipole <: AbstractInteraction
-    # TO BE ADDED
 end
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -494,8 +497,14 @@ end
 """
 
 """
-@inline function print_message(message::String)
+function print_message(message::String)
+    message = string("++++++ ", message, " ++++++")
+    N_space = max(div(46 - length(message), 2), 0)
+    for _ = 1 : N_space
+        message = string(" ", message)
+    end
+
     println("")
-    println("   +++++ ", message, " +++++  ")
+    println(message)
     println("")
 end
