@@ -1,7 +1,10 @@
 module SoftSquishyMatter
 
-println(args...) = println(stdout, args...)
-function println(io::IO, args...)
+"""
+Flush output so that jobs can be monitored on cluster.
+"""
+@inline println(args...) = println(stdout, args...)
+@inline function println(io::IO, args...)
     Base.println(io, args...)
     flush(io)
 end
