@@ -501,7 +501,7 @@ end
 """
 function print_message(message::String)
     message = string("++++++ ", message, " ++++++")
-    N_space = max(div(46 - length(message), 2), 0)
+    N_space = max(div(62 - length(message), 2), 0)
     for _ = 1 : N_space
         message = string(" ", message)
     end

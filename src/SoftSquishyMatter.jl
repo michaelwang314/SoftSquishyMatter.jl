@@ -1,5 +1,11 @@
 module SoftSquishyMatter
 
+println(args...) = println(stdout, args...)
+function println(io::IO, args...)
+    Base.println(io, args...)
+    flush(io)
+end
+
 using Random
 using Serialization
 using DataStructures
