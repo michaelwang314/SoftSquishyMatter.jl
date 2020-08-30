@@ -40,7 +40,7 @@ function run_simulation!(simulation::Simulation; message_interval::Float64 = 10.
     prev_step = 0
     time_elapsed = 0.0
     interval_start = time()
-    @time for step = 0 : simulation.num_steps
+    for step = 0 : simulation.num_steps
         if step % simulation.save_interval == 0
             push!(simulation.history, deepcopy(simulation.things_to_save))
         end
