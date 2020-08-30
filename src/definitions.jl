@@ -239,11 +239,11 @@ struct HarmonicBond <: AbstractInteraction
     k_bond::Float64
     l_rest::Float64
 
-    particle_pairs::Array{NTuple{2, Particle}}
+    particle_pairs::Array{NTuple{2, Particle}, 1}
 
     multithreaded::Bool
 
-    function HarmonicBond(; pairs::Array{NTuple{2, Particle}}, k_bond::Float64, l_rest::Float64 = 0.0, multithreaded::Bool = false)
+    function HarmonicBond(; pairs::Array{NTuple{2, Particle}, 1}, k_bond::Float64, l_rest::Float64 = 0.0, multithreaded::Bool = false)
         new(k_bond, l_rest, pairs, multithreaded)
     end
 end
@@ -257,11 +257,11 @@ struct HarmonicAngle <: AbstractInteraction
     k_θ::Float64
     θ_rest::Float64
 
-    particle_triplets::Array{NTuple{3, Particle}}
+    particle_triplets::Array{NTuple{3, Particle}, 1}
 
     multithreaded::Bool
 
-    function HarmonicAngle(; triplets::Array{NTuple{3, Particle}}, k_θ::Float64, θ_rest::Float64, multithreaded::Bool = false)
+    function HarmonicAngle(; triplets::Array{NTuple{3, Particle}, 1}, k_θ::Float64, θ_rest::Float64, multithreaded::Bool = false)
         new(k_θ, θ_rest, triplets, multithreaded)
     end
 end
