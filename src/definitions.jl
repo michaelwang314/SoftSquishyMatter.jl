@@ -434,13 +434,24 @@ mutable struct Simulation
     things_to_save::NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}}
     history::Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}}, 1}
 
-    function Simulation()
-        new("No description given...",
-            0.0, 0.0, true, true,
-            [], [], [],
-            [], [], [],
-            0.0, [], 0, 
-            0, (particles = [], bonds = []), [])
+    function Simulation(; descriptor::String = "No description given...", 
+                          L_x::Float64 = 0.0, 
+                          L_y::Float64 = 0.0, 
+                          periodic_in_x::Bool = true, 
+                          periodic_in_y::Bool = true, 
+                          particles::Array{Particle, 1} = Particle[], 
+                          bonds::Array{NTuple{2, Particle}, 1} = NTuple{2, Particle}[], 
+                          angles::Array{NTuple{3, Particle}, 1} = NTuple{3, Particle}[], 
+                          cell_lists::Array{CellList, 1} = CellList[], 
+                          interactions::Array{AbstractInteraction, 1} = AbstractInteraction[], 
+                          external_forces::Array{AbstractExternalForce, 1} = AbstractExternalForce[], 
+                          dt::Float64 = 0.0, 
+                          integrators::Array{AbstractIntegrator, 1} = AbstractIntegrator[], 
+                          num_steps::Int64 = 0, 
+                          save_interval::Int64 = 0, 
+                          things_to_save::NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}} = (particles = Particle[], bonds = NTuple{2, Particle}[]), 
+                          history::Array{NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}}, 1} = NamedTuple{(:particles, :bonds), Tuple{Array{Particle, 1}, Array{NTuple{2, Particle}, 1}}}[])
+        new(descriptor, L_x, L_y, periodic_in_x, periodic_in_y, particles, bonds, angles, cell_lists, interactions, external_forces, dt, integrators, num_steps, save_interval, things_to_save, history)
     end
 end
 
