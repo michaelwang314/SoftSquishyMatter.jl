@@ -57,13 +57,13 @@ function visualize!(simulation::Simulation; save_as::Tuple{Symbol, String} = (:g
         if f == 1
             θ = LinRange(0.0, 2 * pi, 20)
             unit_circle = (xs = cos.(θ), ys = sin.(θ))
-            for particle in simulation.history[1].particles
+            for particle in simulation.history[frame_num].particles
                 cxs, cys = particle.R .* unit_circle.xs .+ particle.x, particle.R .* unit_circle.ys .+ particle.y
                 color = particle_colors[particle.ptype]
                 plot!(cxs, cys, seriestype = [:shape,], color = color, linecolor = color, fillalpha = 0.3)
             end
 
-            for (particle_1, particle_2) in simulation.history[1].bonds
+            for (particle_1, particle_2) in simulation.history[frame_num].bonds
                 x_1, y_1 = particle_1.x, particle_1.y
                 x_2, y_2 = particle_2.x, particle_2.y
                 Δx = wrap_displacement(x_1 - x_2; period = simulation.periodic_in_x ? simulation.L_x : -1.0)
