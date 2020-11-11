@@ -11,8 +11,7 @@ Jones and Shifted Lennard Jones.
 @inline function lj_coef(ϵ::Float64, σ²::Float64, Δr²::Float64)
     inv² = σ² / Δr²
     inv⁶ = inv² * inv² * inv²
-    inv⁸ = inv⁶ * inv²
-    return ϵ / σ² * (48 * inv⁶ - 24) * inv⁸
+    return ϵ * (48 * inv⁶ - 24) * inv⁶ / Δr²
 end
 
 """
@@ -41,7 +40,10 @@ function compute_interactions!(lj::LennardJones; period_x::Float64 = -1.0, perio
                 σ² = (lj.σ < 0.0 ? particle.R + neighbor.R : lj.σ)^2
                 cutoff² = (lj.cutoff < 0.0 ? LJ_CONST * σ² : lj.cutoff^2)
                 if 0.0 < Δr² < cutoff²
-                    coef = lj_coef(lj.ϵ, σ², Δr²)
+                    inv² = σ² / Δr²
+                    inv⁶ = inv² * inv² * inv²
+                    coef = lj.ϵ * (48 * inv⁶ - 24) * inv⁶ / Δr²
+
                     f_x += (_f_x = coef * Δx)
                     f_y += (_f_y = coef * Δy)
                     if lj.use_newton_3rd
