@@ -1,19 +1,5 @@
 export compute_interactions!
 
-const LJ_CONST = 1.2599210498948732 # 2^(1.0 / 3.0)
-
-"""
-    lj_coef(ϵ, σ², Δr²)
-
-Returns ϵ / σ² * [48 * (σ² / Δr²)³ - 24] * (σ² / Δr²)⁴.  Useful for Lennard-
-Jones and Shifted Lennard Jones.
-"""
-@inline function lj_coef(ϵ::Float64, σ²::Float64, Δr²::Float64)
-    inv² = σ² / Δr²
-    inv⁶ = inv² * inv² * inv²
-    return ϵ * (48 * inv⁶ - 24) * inv⁶ / Δr²
-end
-
 """
     compute_interations!(lj; period_x, period_y)
 
@@ -27,7 +13,7 @@ function compute_interactions!(lj::LennardJones; period_x::Float64 = -1.0, perio
         i = trunc(Int64, x / lj.cell_list.cell_spacing_x)
         j = trunc(Int64, y / lj.cell_list.cell_spacing_y)
         f_x, f_y = 0.0, 0.0
-        @inbounds for di = -1 : 1, dj = -1 : 1
+        @inbounds for dj = -1 : 1, di = -1 : 1
             idi = mod(i + di, lj.cell_list.num_cells_x) + 1
             jdj = mod(j + dj, lj.cell_list.num_cells_y) + 1
             pid = lj.cell_list.start_pid[idi, jdj]
@@ -38,11 +24,11 @@ function compute_interactions!(lj::LennardJones; period_x::Float64 = -1.0, perio
                 Δr² = Δx^2 + Δy^2
 
                 σ² = (lj.σ < 0.0 ? particle.R + neighbor.R : lj.σ)^2
-                cutoff² = (lj.cutoff < 0.0 ? LJ_CONST * σ² : lj.cutoff^2)
+                cutoff² = (lj.cutoff < 0.0 ? 1.2599210498948732 * σ² : lj.cutoff^2)
                 if 0.0 < Δr² < cutoff²
                     inv² = σ² / Δr²
                     inv⁶ = inv² * inv² * inv²
-                    coef = lj.ϵ * (48 * inv⁶ - 24) * inv⁶ / Δr²
+                    coef = lj.ϵ * (48.0 * inv⁶ - 24.0) * inv⁶ / Δr²
 
                     f_x += (_f_x = coef * Δx)
                     f_y += (_f_y = coef * Δy)
