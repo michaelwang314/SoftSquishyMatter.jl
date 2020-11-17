@@ -303,6 +303,8 @@ end
 # External forces
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export AbstractExternalForce
+export ConstantForce
+export HarmonicTrap
 
 abstract type AbstractExternalForce end
 
