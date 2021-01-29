@@ -1,3 +1,5 @@
+Project temporarily on hold.  Most likely going to overhaul things a quite bit in the near future.
+
 # SoftSquishyMatter.jl
 A simple package for simulating soft matter things.  At the moment, the package can simulate simple systems of interacting passive Brownian or systems of active particles (active Brownian and run-and-tumble).  There are plans for adding additional interactions, integrators, and more.  Also, hopefully the code can be further optimized in the future.  The goal is to create a package written in Julia that is easily customizable and readable (at the cost of some performance probably).
 
